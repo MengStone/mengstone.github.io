@@ -59,23 +59,24 @@
   .post:hover {
     transform: translateY(-3px);
   }
-
-  .post h2 {
+  /* 确保 Markdown 转换后的元素样式正确 */
+  .post h1, .post h2, .post h3 {
     margin-top: 0;
     margin-bottom: 10px;
-    font-size: 1.6em;
+    font-size: 1.6em; /* 使用 Markdown 中的 H1/H2 作为文章标题 */
   }
 
-  .post p {
-    margin: 0;
+  .post p, .post ul, .post ol {
+    margin: 0 0 1em 0;
   }
-
-  /* 页脚 */
-  footer {
-    text-align: center;
-    margin: 60px 0 20px;
+  
+  /* 添加日期/元信息样式 */
+  .post-meta {
     color: #777;
     font-size: 0.9em;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
   }
 </style>
 </head>
@@ -87,28 +88,8 @@
     <p>游戏开发日志</p>
   </header>
 
-  <section class="posts">
-    <div class="post">
-      <h2>2025-11-27 工作日志</h2>
-      <p>创建个人网站。</p>
-    </div>
-
-    <div class="post">
-      <h2>2025-11-26 工作日志</h2>
-    <p>1.【敌人】异常状态管理：处理颜色和特效-完成<br> 
-      2.【表现】异常状态施加时飘字-完成<br> 
-      3.【表现】特殊效果飘字：盗窃、湮灭-完成<br> 
-      4.【武器】新增虚空之刺武器，有{参数1}%的概率直接湮灭敌人-完成<br> 
-      5.【表现】武器和遗物的机制介绍文本中，特殊参数使用典雅紫色-完成<br> 
-      6.【表现】新增无敌发光效果shader+Mat-完成<br> 
-      7.【角色】无敌：免疫一切伤害-完成<br> 
-      8.【BUG】购买行为后锁定的卡牌在刷新后位置前移-完成</p>
-    </div>
-
-    <div class="post">
-      <h2>世界观</h2>
-      <p>奇幻世界观设计。</p>
-    </div>
+  <section class="posts" id="posts-container">
+    <p>正在加载日志...</p>
   </section>
 
   <footer>
@@ -116,5 +97,83 @@
   </footer>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const postsContainer = document.getElementById('posts-container');
+    postsContainer.innerHTML = ''; // 清空“正在加载”提示
+
+    // 1. 异步加载并渲染单个 Markdown 文件
+    async function loadPost(postData) {
+        try {
+            const response = await fetch(postData.file);
+            if (!response.ok) {
+                throw new Error(`无法加载文件: ${postData.file}`);
+            }
+            const markdownText = await response.text();
+            const htmlContent = marked.parse(markdownText);
+
+            // 创建文章容器
+            const postDiv = document.createElement('div');
+            postDiv.className = 'post';
+            
+            // 添加元信息（日期和标题）
+            let metaHtml = '';
+            if (postData.title) {
+                // 如果 Markdown 文件内部也有标题，这里可以只显示日期
+                // 为了避免重复，我们只显示日期，但保持标题的标记在 JSON 中
+                metaHtml += `<h2>${postData.title}</h2>`; 
+            }
+            if (postData.date) {
+                metaHtml += `<div class="post-meta">发布于: ${postData.date}</div>`;
+            }
+
+            // 将元信息和转换后的 HTML 放入容器
+            postDiv.innerHTML = metaHtml + htmlContent;
+            
+            // 插入到日志容器中
+            postsContainer.appendChild(postDiv);
+
+        } catch (error) {
+            console.error(error);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'post';
+            errorDiv.innerHTML = `<p style="color:red;">加载文章失败: ${postData.file}</p>`;
+            postsContainer.appendChild(errorDiv);
+        }
+    }
+
+    // 2. 加载 posts.json 并依次加载日志
+    async function loadAllPosts() {
+        try {
+            // 从根目录加载 posts.json
+            const response = await fetch('posts.json'); 
+            if (!response.ok) {
+                throw new Error('无法加载 posts.json 文件，请确保文件存在于根目录。');
+            }
+            
+            const postList = await response.json();
+
+            // 检查列表是否为空
+            if (postList.length === 0) {
+                postsContainer.innerHTML = '<p>暂无日志。</p>';
+                return;
+            }
+
+            // 遍历 JSON 列表，依次加载并渲染每个日志
+            postList.forEach(loadPost);
+
+        } catch (error) {
+            console.error('加载日志列表出错:', error);
+            postsContainer.innerHTML = `<p style="color:red;">初始化失败：${error.message}</p>`;
+        }
+    }
+
+    loadAllPosts();
+});
+</script>
+
 </body>
 </html>
