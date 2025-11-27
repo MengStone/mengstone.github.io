@@ -130,13 +130,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (inUl) { html.push('</ul>'); inUl = false; }
       };
       const inline = (s) => {
-        // 先对源文本做 HTML 转义，再进行行内标记替换
+        // 先对源文本做 HTML 转义
         s = esc(s);
+        // 把段内用于换行的标记恢复成真正的 <br>
+        s = s.replace(/&lt;br&gt;/g, '<br>');
         // 粗体与斜体（简单处理）
-        s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-        s = s.replace(/\*(.+?)\*/g, '<em>$1</em>');
+        s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1<\/strong>');
+        s = s.replace(/\*(.+?)\*/g, '<em>$1<\/em>');
         // 行内代码
-        s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+        s = s.replace(/`([^`]+)`/g, '<code>$1<\/code>');
         return s;
       };
 
