@@ -1,11 +1,120 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <title>MengStone 的个人网站</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><b>史莱姆的宝箱</b>的个人网站</title>
+<style>
+  /* 全局样式 */
+  body {
+    margin: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color: #f5f5f5;
+    color: #222;
+    line-height: 1.6;
+  }
+
+  a {
+    color: #3a7afe;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  /* 容器 */
+  .container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+
+  /* 顶部标题 */
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  header h1 {
+    font-size: 2.8em;
+    margin: 0;
+  }
+
+  header p {
+    font-size: 1.2em;
+    color: #555;
+  }
+
+  /* 文章列表 */
+  .post {
+    background-color: #fff;
+    padding: 20px 25px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+  }
+
+  .post:hover {
+    transform: translateY(-3px);
+  }
+
+  .post h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.6em;
+  }
+
+  .post p {
+    margin: 0;
+  }
+
+  /* 页脚 */
+  footer {
+    text-align: center;
+    margin: 60px 0 20px;
+    color: #777;
+    font-size: 0.9em;
+  }
+</style>
 </head>
 <body>
-    <h1>Hello, MengStone!</h1>
-    <p>这是我的 GitHub Pages 用户主页。</p>
+<div class="container">
+
+  <header>
+    <h1>拉比的村子</h1>
+    <p>游戏开发日志</p>
+  </header>
+
+  <section class="posts">
+    <div class="post">
+      <h2>2025-11-27 工作日志</h2>
+      <p>创建网站。</p>
+    </div>
+
+    <div class="post">
+      <h2>2025-11-26 游戏开发进度</h2>
+      <p>1.【敌人】异常状态管理：处理颜色和特效-完成
+2.【表现】异常状态施加时飘字-完成
+3.【表现】特殊效果飘字：盗窃、湮灭-完成
+4.【武器】新增虚空之刺武器，有{参数1}%的概率直接湮灭敌人-完成
+5.【表现】武器和遗物的机制介绍文本中，特殊参数使用典雅紫色-完成
+6.【表现】新增无敌发光效果shader+Mat-完成
+7.【角色】无敌：免疫一切伤害-完成
+8.【BUG】购买行为后锁定的卡牌在刷新后位置前移-完成</p>
+    </div>
+
+    <div class="post">
+      <h2>世界观</h2>
+      <p>奇幻世界观设计。</p>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 MengStone · <a href="https://github.com/MengStone">GitHub</a>
+  </footer>
+
+</div>
 </body>
 </html>
