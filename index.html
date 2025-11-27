@@ -232,6 +232,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let lastCard = null;
         normalized.forEach(sec => {
+          // 过滤仅包含占位符 '-'（或空行）的日期，不渲染该天
+          const lines = sec.content.replace(/\r\n?/g, '\n').split('\n')
+            .map(l => l.trim())
+            .filter(l => l.length > 0);
+          const hasNonPlaceholder = lines.some(l => l !== '-');
+          if (!hasNonPlaceholder) {
+            return;
+          }
+
           const postDiv = document.createElement('div');
           postDiv.className = 'post';
           const titleHtml = sec.extraTitle ? `<h2>${sec.extraTitle}</h2>` : '';
