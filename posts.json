@@ -1,3 +1,4 @@
 [
-  { "date": "2025-11-27", "title": "工作日志", "file": "posts/2025-11-27-log.md" }  
+  { "month": "2025-11", "title": "2025年11月", "file": "posts/2025-11.md" },
+  { "month": "2025-10", "title": "2025年10月", "file": "posts/2025-10.md" }
 ]

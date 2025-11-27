@@ -98,81 +98,260 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const postsContainer = document.getElementById('posts-container');
     postsContainer.innerHTML = ''; // 清空“正在加载”提示
 
-    // 1. 异步加载并渲染单个 Markdown 文件
-    async function loadPost(postData) {
-        try {
-            const response = await fetch(postData.file);
-            if (!response.ok) {
-                throw new Error(`无法加载文件: ${postData.file}`);
-            }
-            const markdownText = await response.text();
-            const htmlContent = marked.parse(markdownText);
+    // 0. 轻量 Markdown 解析器（去除外部依赖，加快加载速度）
+    function parseMarkdown(md) {
+      if (!md) return '';
+      // 转义基本 HTML
+      const esc = (s) => s
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
 
-            // 创建文章容器
-            const postDiv = document.createElement('div');
-            postDiv.className = 'post';
-            
-            // 添加元信息（日期和标题）
-            let metaHtml = '';
-            if (postData.title) {
-                // 如果 Markdown 文件内部也有标题，这里可以只显示日期
-                // 为了避免重复，我们只显示日期，但保持标题的标记在 JSON 中
-                metaHtml += `<h2>${postData.title}</h2>`; 
-            }
-            if (postData.date) {
-                metaHtml += `<div class="post-meta">发布于: ${postData.date}</div>`;
-            }
+      // 行级处理：先按行拆分，处理标题与列表
+      const lines = md.replace(/\r\n?/g, '\n').split('\n');
+      const html = [];
+      let inUl = false;
+      let para = [];
 
-            // 将元信息和转换后的 HTML 放入容器
-            postDiv.innerHTML = metaHtml + htmlContent;
-            
-            // 插入到日志容器中
-            postsContainer.appendChild(postDiv);
-
-        } catch (error) {
-            console.error(error);
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'post';
-            errorDiv.innerHTML = `<p style="color:red;">加载文章失败: ${postData.file}</p>`;
-            postsContainer.appendChild(errorDiv);
+      const flushPara = () => {
+        if (para.length) {
+          // 单行换行保留为 <br>
+          const text = para.join('<br>');
+          html.push(`<p>${inline(text)}</p>`);
+          para = [];
         }
+      };
+      const closeUl = () => {
+        if (inUl) { html.push('</ul>'); inUl = false; }
+      };
+      const inline = (s) => {
+        // 先对源文本做 HTML 转义，再进行行内标记替换
+        s = esc(s);
+        // 粗体与斜体（简单处理）
+        s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        s = s.replace(/\*(.+?)\*/g, '<em>$1</em>');
+        // 行内代码
+        s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+        return s;
+      };
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (/^\s*$/.test(line)) { // 空行
+          closeUl();
+          flushPara();
+          continue;
+        }
+        const h3 = line.match(/^###\s+(.+)/);
+        if (h3) { closeUl(); flushPara(); html.push(`<h3>${inline(h3[1])}</h3>`); continue; }
+        const h2 = line.match(/^##\s+(.+)/);
+        if (h2) { closeUl(); flushPara(); html.push(`<h2>${inline(h2[1])}</h2>`); continue; }
+        const h1 = line.match(/^#\s+(.+)/);
+        if (h1) { closeUl(); flushPara(); html.push(`<h1>${inline(h1[1])}</h1>`); continue; }
+        const li = line.match(/^[-*]\s+(.+)/);
+        if (li) {
+          flushPara();
+          if (!inUl) { html.push('<ul>'); inUl = true; }
+          html.push(`<li>${inline(li[1])}</li>`);
+          continue;
+        }
+        // 常规段落
+        para.push(line.trim());
+      }
+      closeUl();
+      flushPara();
+      return html.join('\n');
     }
 
-    // 2. 加载 posts.json 并依次加载日志
-    async function loadAllPosts() {
-        try {
-            // 从根目录加载 posts.json
-            const response = await fetch('posts.json'); 
-            if (!response.ok) {
-                throw new Error('无法加载 posts.json 文件，请确保文件存在于根目录。');
-            }
-            
-            const postList = await response.json();
-
-            // 检查列表是否为空
-            if (postList.length === 0) {
-                postsContainer.innerHTML = '<p>暂无日志。</p>';
-                return;
-            }
-
-            // 遍历 JSON 列表，依次加载并渲染每个日志
-            postList.forEach(loadPost);
-
-        } catch (error) {
-            console.error('加载日志列表出错:', error);
-            postsContainer.innerHTML = `<p style="color:red;">初始化失败：${error.message}</p>`;
+    // 1. 异步加载并渲染“月度 Markdown”，按天切分渲染
+    async function loadMonthlyPost(postData) {
+      try {
+        const response = await fetch(postData.file);
+        if (!response.ok) {
+          throw new Error(`无法加载文件: ${postData.file}`);
         }
+        const markdownText = await response.text();
+
+        // 月份信息，如 2025-11
+        const monthStr = postData.month || '';
+
+        // 解析规则：按二级标题（##）且标题为日期进行切分
+        // 支持两种格式：YYYY-MM-DD 或 MM-DD（会自动补全年份与月份）
+        const headingRegex = /(\n|^)##\s+(\d{4}-\d{2}-\d{2}|\d{2}-\d{2})([^\n]*)\s*\n/g;
+
+        let match;
+        const sections = [];
+        const indices = [];
+
+        while ((match = headingRegex.exec(markdownText)) !== null) {
+          const headingStart = match.index + (match[1] ? match[1].length : 0); // 开始于 '##'
+          const contentStart = headingRegex.lastIndex; // 标题整行之后
+          indices.push({ headingStart, contentStart, dateText: match[2], extraTitle: (match[3] || '').trim() });
+        }
+
+        if (indices.length === 0) {
+          // 若没有匹配到按天的标题，则整体作为一篇月度文章展示
+          const postDiv = document.createElement('div');
+          postDiv.className = 'post';
+          const titlePart = postData.title ? `<h2>${postData.title}</h2>` : '';
+          const metaPart = monthStr ? `<div class="post-meta">月份: ${monthStr}</div>` : '';
+          postDiv.innerHTML = titlePart + metaPart + parseMarkdown(markdownText);
+          postsContainer.appendChild(postDiv);
+          return { lastCard: postDiv };
+        }
+
+        // 生成分段区间
+        for (let i = 0; i < indices.length; i++) {
+          const start = indices[i].contentStart;
+          const end = i + 1 < indices.length ? indices[i + 1].headingStart : markdownText.length;
+          const slice = markdownText.slice(start, end);
+          sections.push({ headingDate: indices[i].dateText, extraTitle: indices[i].extraTitle, content: slice });
+        }
+
+        // 先规范化日期，生成排序键
+        const normalized = sections.map(sec => {
+          // 规范化日期
+          let dateStr = sec.headingDate;
+          if (/^\d{2}-\d{2}$/.test(dateStr)) {
+            // MM-DD，需要从 monthStr 推导年份
+            if (/^\d{4}-\d{2}$/.test(monthStr)) {
+              dateStr = `${monthStr}-${dateStr}`;
+            }
+          }
+          const key = dateStr.replace(/-/g, ''); // YYYYMMDD
+          return { ...sec, dateStr, key };
+        });
+
+        // 按日期倒序排列
+        normalized.sort((a, b) => (b.key.localeCompare(a.key)));
+
+        let lastCard = null;
+        normalized.forEach(sec => {
+          const postDiv = document.createElement('div');
+          postDiv.className = 'post';
+          const titleHtml = sec.extraTitle ? `<h2>${sec.extraTitle}</h2>` : '';
+          const metaHtml = `<div class="post-meta">日期: ${sec.dateStr}</div>`;
+          const sectionHtml = parseMarkdown(sec.content);
+          postDiv.innerHTML = titleHtml + metaHtml + sectionHtml;
+          postsContainer.appendChild(postDiv);
+          lastCard = postDiv;
+        });
+
+        return { lastCard };
+
+      } catch (error) {
+        console.error(error);
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'post';
+        errorDiv.innerHTML = `<p style=\"color:red;\">加载月度文章失败: ${postData.file}</p>`;
+        postsContainer.appendChild(errorDiv);
+      }
+    }
+
+    // 2. 仅加载“最近一个月”，并在该月最早日志后放置“加载更多”按钮
+    async function loadAllPosts() {
+      try {
+        // 从根目录加载 posts.json
+        const response = await fetch('posts.json'); 
+        if (!response.ok) {
+          throw new Error('无法加载 posts.json 文件，请确保文件存在于根目录。');
+        }
+        
+        const postList = await response.json();
+
+        // 检查列表是否为空
+        if (postList.length === 0) {
+          postsContainer.innerHTML = '<p>暂无日志。</p>';
+          return;
+        }
+
+        // 仅保留月度模式，并按 month 倒序排列
+        const monthsOnly = postList.filter(x => x.month);
+        monthsOnly.sort((a, b) => b.month.localeCompare(a.month));
+
+        let nextMonthIndex = 0; // 指向下一个待加载的月份（倒序）
+        let loadMoreBtn = null;
+        let noMoreMsg = null;
+
+        const removeControls = () => {
+          if (loadMoreBtn && loadMoreBtn.parentNode) loadMoreBtn.parentNode.removeChild(loadMoreBtn);
+          loadMoreBtn = null;
+          if (noMoreMsg && noMoreMsg.parentNode) noMoreMsg.parentNode.removeChild(noMoreMsg);
+          noMoreMsg = null;
+        };
+
+        const placeAfter = (refNode, node) => {
+          if (!refNode || !refNode.parentNode) {
+            postsContainer.appendChild(node);
+          } else if (refNode.nextSibling) {
+            refNode.parentNode.insertBefore(node, refNode.nextSibling);
+          } else {
+            refNode.parentNode.appendChild(node);
+          }
+        };
+
+        const placeLoadMore = (afterNode) => {
+          removeControls();
+          if (nextMonthIndex < monthsOnly.length) {
+            loadMoreBtn = document.createElement('div');
+            loadMoreBtn.style.textAlign = 'center';
+            loadMoreBtn.style.margin = '16px 0 24px';
+            loadMoreBtn.innerHTML = `<button id="load-more-btn" style="padding:8px 16px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;">加载更多</button>`;
+            const btn = loadMoreBtn.querySelector('#load-more-btn');
+            btn.addEventListener('click', async () => {
+              removeControls();
+              const current = monthsOnly[nextMonthIndex];
+              nextMonthIndex++;
+              const res = await loadMonthlyPost(current);
+              const anchor = res && res.lastCard ? res.lastCard : null;
+              // 放置新一轮按钮或提示
+              if (nextMonthIndex < monthsOnly.length) {
+                placeLoadMore(anchor);
+              } else {
+                noMoreMsg = document.createElement('div');
+                noMoreMsg.style.textAlign = 'center';
+                noMoreMsg.style.color = '#777';
+                noMoreMsg.style.margin = '16px 0 24px';
+                noMoreMsg.textContent = '没有更早的工作日志了';
+                placeAfter(anchor, noMoreMsg);
+              }
+            });
+            placeAfter(afterNode, loadMoreBtn);
+          } else {
+            // 无更多月份
+            noMoreMsg = document.createElement('div');
+            noMoreMsg.style.textAlign = 'center';
+            noMoreMsg.style.color = '#777';
+            noMoreMsg.style.margin = '16px 0 24px';
+            noMoreMsg.textContent = '没有更早的工作日志了';
+            placeAfter(afterNode, noMoreMsg);
+          }
+        };
+
+        // 初次仅加载最近一个月
+        if (monthsOnly.length > 0) {
+          const first = monthsOnly[nextMonthIndex];
+          nextMonthIndex++;
+          const res = await loadMonthlyPost(first);
+          const anchor = res && res.lastCard ? res.lastCard : null;
+          placeLoadMore(anchor);
+        } else {
+          postsContainer.innerHTML = '<p>暂无日志。</p>';
+        }
+
+      } catch (error) {
+        console.error('加载日志列表出错:', error);
+        postsContainer.innerHTML = `<p style=\"color:red;\">初始化失败：${error.message}</p>`;
+      }
     }
 
     loadAllPosts();
-});
+  });
 </script>
 
 </body>
