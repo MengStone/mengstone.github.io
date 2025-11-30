@@ -554,8 +554,28 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // --- 3. 模块切换逻辑 ---
+    // 3. 加载单篇 Markdown 内容（用于联系方式、游戏项目等简单页面）
+    async function loadSingleMarkdown(url, container) {
+      try {
+        const resp = await fetch(url);
+        if (!resp.ok) {
+          throw new Error(`无法加载文件: ${url}`);
+        }
+        const text = await resp.text();
+        const wrapper = document.createElement('div');
+        wrapper.className = 'post';
+        wrapper.innerHTML = parseMarkdown(text);
+        container.innerHTML = '';
+        container.appendChild(wrapper);
+      } catch (e) {
+        container.innerHTML = `<p style="color:red;">加载失败：${e.message}</p>`;
+      }
+    }
+
+    // --- 4. 模块切换逻辑 ---
     let logLoaded = false;
+    let contactLoaded = false;
+    let projectLoaded = false;
 
     const hideAllModules = () => {
       Object.values(moduleSections).forEach(sec => {
@@ -592,6 +612,16 @@ document.addEventListener('DOMContentLoaded', () => {
         postsContainer.innerHTML = '<p>正在加载日志...</p>';
         await loadAllPosts();
         logLoaded = true;
+      }
+
+      if (key === 'contact' && !contactLoaded) {
+        await loadSingleMarkdown('posts/联系方式.md', moduleSections.contact);
+        contactLoaded = true;
+      }
+
+      if (key === 'project' && !projectLoaded) {
+        await loadSingleMarkdown('posts/游戏项目.md', moduleSections.project);
+        projectLoaded = true;
       }
     };
 
