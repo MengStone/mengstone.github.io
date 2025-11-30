@@ -448,6 +448,9 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
+        // 有数据时，先清空“正在加载日志...”提示
+        postsContainer.innerHTML = '';
+
         // 仅保留月度模式，并按 month 倒序排列
         const monthsOnly = postList.filter(x => x.month);
         monthsOnly.sort((a, b) => b.month.localeCompare(a.month));
