@@ -306,6 +306,21 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         };
 
+        // 加载下一个“非空”的月份（整个月至少有一天不是占位符 '-'）
+        const loadNextNonEmptyMonth = async () => {
+          while (nextMonthIndex < monthsOnly.length) {
+            const current = monthsOnly[nextMonthIndex];
+            nextMonthIndex++;
+            const res = await loadMonthlyPost(current);
+            if (res && res.lastCard) {
+              // 至少渲染出了一天的内容
+              return res.lastCard;
+            }
+            // 如果整个月都是空的（lastCard 为空），继续尝试下一个月份
+          }
+          return null;
+        };
+
         const placeLoadMore = (afterNode) => {
           removeControls();
           if (nextMonthIndex < monthsOnly.length) {
@@ -316,20 +331,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const btn = loadMoreBtn.querySelector('#load-more-btn');
             btn.addEventListener('click', async () => {
               removeControls();
-              const current = monthsOnly[nextMonthIndex];
-              nextMonthIndex++;
-              const res = await loadMonthlyPost(current);
-              const anchor = res && res.lastCard ? res.lastCard : null;
-              // 放置新一轮按钮或提示
-              if (nextMonthIndex < monthsOnly.length) {
-                placeLoadMore(anchor);
+              const anchor = await loadNextNonEmptyMonth();
+              if (anchor) {
+                // 放置新一轮按钮或提示
+                if (nextMonthIndex < monthsOnly.length) {
+                  placeLoadMore(anchor);
+                } else {
+                  noMoreMsg = document.createElement('div');
+                  noMoreMsg.style.textAlign = 'center';
+                  noMoreMsg.style.color = '#777';
+                  noMoreMsg.style.margin = '16px 0 24px';
+                  noMoreMsg.textContent = '没有更早的工作日志了';
+                  placeAfter(anchor, noMoreMsg);
+                }
               } else {
+                // 剩余月份也都是空的
                 noMoreMsg = document.createElement('div');
                 noMoreMsg.style.textAlign = 'center';
                 noMoreMsg.style.color = '#777';
                 noMoreMsg.style.margin = '16px 0 24px';
                 noMoreMsg.textContent = '没有更早的工作日志了';
-                placeAfter(anchor, noMoreMsg);
+                placeAfter(afterNode, noMoreMsg);
               }
             });
             placeAfter(afterNode, loadMoreBtn);
@@ -344,13 +366,14 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         };
 
-        // 初次仅加载最近一个月
+        // 初次仅加载最近一个“非空”的月份
         if (monthsOnly.length > 0) {
-          const first = monthsOnly[nextMonthIndex];
-          nextMonthIndex++;
-          const res = await loadMonthlyPost(first);
-          const anchor = res && res.lastCard ? res.lastCard : null;
-          placeLoadMore(anchor);
+          const firstAnchor = await loadNextNonEmptyMonth();
+          if (firstAnchor) {
+            placeLoadMore(firstAnchor);
+          } else {
+            postsContainer.innerHTML = '<p>暂无日志。</p>';
+          }
         } else {
           postsContainer.innerHTML = '<p>暂无日志。</p>';
         }
