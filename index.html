@@ -143,6 +143,21 @@
     box-shadow: 0 6px 18px rgba(0,0,0,0.05);
   }
 
+  /* 月份标题样式 */
+  .month-header {
+    margin: 32px 0 18px;
+    text-align: center;
+  }
+
+  .month-header h2 {
+    margin: 0;
+    font-size: 2rem;
+    font-style: italic;
+    font-family: "Georgia", "Times New Roman", serif;
+    color: #6b4c8f;
+    letter-spacing: 0.12em;
+  }
+
   /* 文章列表（工作日志模块内复用） */
   .post {
     background-color: #fff;
@@ -400,6 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
         normalized.sort((a, b) => (b.key.localeCompare(a.key)));
 
         let lastCard = null;
+        let monthHeaderInserted = false;
         normalized.forEach(sec => {
           // 过滤仅包含占位符 '-'（或空行）的日期，不渲染该天
           const lines = sec.content.replace(/\r\n?/g, '\n').split('\n')
@@ -408,6 +424,16 @@ document.addEventListener('DOMContentLoaded', () => {
           const hasNonPlaceholder = lines.some(l => l !== '-');
           if (!hasNonPlaceholder) {
             return;
+          }
+
+          // 在该月第一条实际日志前插入月份标题卡片
+          if (!monthHeaderInserted) {
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'month-header';
+            const monthTitle = postData.title || (monthStr ? `${monthStr} 日志` : '工作日志');
+            headerDiv.innerHTML = `<h2>${monthTitle}</h2>`;
+            postsContainer.appendChild(headerDiv);
+            monthHeaderInserted = true;
           }
 
           const postDiv = document.createElement('div');
