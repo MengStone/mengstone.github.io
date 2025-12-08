@@ -316,6 +316,13 @@ document.addEventListener('DOMContentLoaded', () => {
         s = esc(s);
         // 把段内用于换行的标记恢复成真正的 <br>
         s = s.replace(/&lt;br&gt;/g, '<br>');
+
+        // 自动把纯文本 URL 变成超链接
+        s = s.replace(
+          /(https?:\/\/[^\s<]+)/g,
+          '<a href="$1" target="_blank" rel="noopener noreferrer">$1<\/a>'
+        );
+
         // 粗体与斜体（简单处理）
         s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1<\/strong>');
         s = s.replace(/\*(.+?)\*/g, '<em>$1<\/em>');
@@ -329,6 +336,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (/^\s*$/.test(line)) { // 空行
           closeUl();
           flushPara();
+          continue;
+        }
+        // Markdown 图片语法：![]()
+        const img = line.match(/^!\[(.*?)\]\((.+?)\)/);
+        if (img) {
+          closeUl();
+          flushPara();
+          const alt = esc(img[1] || '');
+          const src = img[2].trim();
+          html.push(`<p><img src="${src}" alt="${alt}" style="max-width:100%;height:auto;" /></p>`);
           continue;
         }
         const h3 = line.match(/^###\s+(.+)/);
