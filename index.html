@@ -380,7 +380,7 @@
   }
 
   #module-log {
-    font-size: 20px;
+    font-size: 18px;  /*日志字体大小*/
   }
 
   .month-header {
@@ -433,54 +433,88 @@
     #home-grid {
       grid-template-columns: 1fr;
       grid-auto-rows: auto;
-      gap: 0;
+      gap: 18px;
       padding-bottom: 20px;
     }
 
     .module-card[data-module] {
       grid-column: 1 / -1;
       grid-row: auto;
-      height: auto;
-      min-height: 160px;
+      width: 100%;
+      height: 240px;
+      min-height: 240px;
       margin-top: 0;
+      border-radius: 30px;
       transform:
         translate3d(calc(var(--mx, 0px)), calc(var(--parallax, 0px) + var(--my, 0px)), 0)
         rotate(0deg);
     }
 
+    .module-card[data-module] {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      box-shadow: 0 0 0 12px rgba(244, 244, 245, 0.72), var(--shadow-tight);
+    }
+
+    .module-card[data-module]:hover {
+      box-shadow: 0 0 0 12px rgba(244, 244, 245, 0.72), var(--shadow-soft);
+    }
+
     .module-card[data-module="world"] {
-      width: 92%;
-      justify-self: start;
-      margin-left: 0;
-      border-radius: 30px;
-      min-height: 260px;
+      background-image: url("images/世界观栏目背景图.png");
     }
 
     .module-card[data-module="log"] {
-      width: 86%;
-      justify-self: end;
-      margin-top: -20px;
+      background-image: url("images/mobile_工作日志背景.png");
     }
 
     .module-card[data-module="essay"] {
-      width: 74%;
-      justify-self: start;
-      margin-top: -22px;
-      border-radius: 999px;
+      background-image: url("images/mobile_随笔背景.png");
     }
 
     .module-card[data-module="project"] {
-      width: 90%;
-      justify-self: end;
-      margin-top: -20px;
-      border-radius: 30px;
+      background-image: url("images/mobile_游戏项目背景.png");
+      background-color: transparent;
+      color: rgba(18, 18, 20, 0.92);
+    }
+
+    .module-card[data-module="project"]::before {
+      color: rgba(18, 18, 20, 0.10);
+    }
+
+    .module-card[data-module]::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(11, 44, 255, 0.05), rgba(31, 42, 68, 0.18));
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .module-card[data-module] .module-card-title {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      color: var(--label-ink);
+      background: rgba(255, 255, 255, 0.26);
+      border: none;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .module-card[data-module="world"] .module-card-title {
+      width: auto;
     }
 
     .contact-link {
       grid-column: 1 / -1;
       justify-self: end;
-      margin-top: -10px;
-      padding: 18px 0 0;
+      margin-top: 0;
+      padding: 8px 0 0;
       transform: translate3d(0, 0, 0);
     }
 
