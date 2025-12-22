@@ -556,6 +556,24 @@
       width: auto;
     }
 
+    .module-card[data-module="essay"] .module-card-title {
+      position: absolute;
+      left: clamp(12px, 3vw, 18px);
+      bottom: clamp(12px, 3vw, 18px);
+      top: auto;
+      transform: none;
+      padding: clamp(6px, 2vw, 8px) clamp(10px, 3vw, 14px);
+      border-radius: 999px;
+      font-size: clamp(1rem, 3.5vw, 1.3rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--label-ink);
+      background: rgba(255, 255, 255, 0.26);
+      border: none;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
     .contact-link {
       grid-column: 1 / -1;
       justify-self: end;
@@ -589,6 +607,15 @@
         padding: clamp(4px, 1.5vw, 6px) clamp(8px, 2.5vw, 10px);
         left: clamp(8px, 2.5vw, 12px);
         bottom: clamp(8px, 2.5vw, 12px);
+      }
+      .module-card[data-module="essay"] .module-card-title {
+        position: absolute;
+        left: clamp(8px, 2.5vw, 12px);
+        bottom: clamp(8px, 2.5vw, 12px);
+        top: auto;
+        transform: none;
+        font-size: clamp(0.85rem, 4.5vw, 1rem);
+        padding: clamp(4px, 1.5vw, 6px) clamp(8px, 2.5vw, 10px);
       }
     }
   }
