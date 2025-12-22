@@ -245,6 +245,10 @@
       display: grid;
       place-items: center;
       text-align: center;
+      background-image: url("images/随笔背景2.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       box-shadow: 0 0 0 12px rgba(244, 244, 245, 0.72), var(--shadow-tight);
     }
 
@@ -252,9 +256,37 @@
       box-shadow: 0 0 0 12px rgba(244, 244, 245, 0.72), var(--shadow-soft);
     }
 
-    .module-card[data-module="essay"] img {
-      width: 48px;
-      height: 48px;
+    .module-card[data-module="essay"]::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(11, 44, 255, 0.04), rgba(31, 42, 68, 0.28));
+      pointer-events: none;
+      z-index: 1;
+      border-radius: 999px;
+    }
+
+    
+    .module-card[data-module="essay"] .module-card-title {
+      position: absolute;
+      left: 18%;
+      top: 45%;
+      transform: translate(-50%, -50%);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--label-ink);
+      background: rgba(255, 255, 255, 0.28);
+      border: none;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      text-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.16),
+        0 2px 6px rgba(0, 0, 0, 0.12);
     }
 
     .module-card[data-module="project"] {
@@ -429,9 +461,11 @@
   /* --- 手机端兼容 --- */
   @media (max-width: 768px) {
     .container { 
-      padding: 0 clamp(12px, 4vw, 20px); 
+      padding: 0 clamp(16px, 5vw, 24px); 
       margin: 40px auto; 
       max-width: 100%;
+      box-sizing: border-box;
+      overflow-x: hidden;
     }
     header h1 { font-size: clamp(2rem, 6vw, 2.5rem); }
     #home-grid {
@@ -439,17 +473,21 @@
       grid-auto-rows: auto;
       gap: clamp(14px, 4vw, 18px);
       padding-bottom: 20px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .module-card[data-module] {
       grid-column: 1 / -1;
       grid-row: auto;
       width: 100%;
-      height: clamp(180px, 45vw, 240px);
-      min-height: clamp(160px, 40vw, 220px);
+      max-width: 100%;
+      height: clamp(160px, 40vw, 200px);
+      min-height: clamp(140px, 35vw, 180px);
       margin-top: 0;
       border-radius: clamp(20px, 5vw, 30px);
-      padding: clamp(20px, 5vw, 32px);
+      padding: clamp(16px, 4vw, 28px);
+      box-sizing: border-box;
       transform:
         translate3d(calc(var(--mx, 0px)), calc(var(--parallax, 0px) + var(--my, 0px)), 0)
         rotate(0deg);
@@ -535,16 +573,22 @@
     /* 更小屏幕的额外优化 */
     @media (max-width: 480px) {
       .container { 
-        padding: 0 clamp(8px, 3vw, 12px); 
+        padding: 0 clamp(12px, 4vw, 16px); 
+        overflow-x: hidden;
+      }
+      #home-grid {
+        gap: clamp(12px, 3vw, 16px);
       }
       .module-card[data-module] {
-        height: clamp(140px, 40vw, 180px);
-        min-height: clamp(120px, 35vw, 160px);
-        padding: clamp(16px, 4vw, 24px);
+        height: clamp(120px, 32vw, 160px);
+        min-height: clamp(100px, 28vw, 140px);
+        padding: clamp(12px, 3vw, 20px);
       }
       .module-card[data-module] .module-card-title {
-        font-size: clamp(0.9rem, 4vw, 1.1rem);
-        padding: clamp(4px, 1.5vw, 6px) clamp(8px, 2.5vw, 12px);
+        font-size: clamp(0.85rem, 4.5vw, 1rem);
+        padding: clamp(4px, 1.5vw, 6px) clamp(8px, 2.5vw, 10px);
+        left: clamp(8px, 2.5vw, 12px);
+        bottom: clamp(8px, 2.5vw, 12px);
       }
     }
   }
@@ -560,22 +604,18 @@
 
   <section id="home-grid">
     <div class="module-card reveal" data-module="world" data-roman="I" data-depth="0.08">
-      <img src="icons/Icon_奇幻世界观.png" alt="世界观">
       <div class="module-card-title">世界观设定集</div>
     </div>
 
     <div class="module-card reveal" data-module="log" data-roman="II" data-depth="0.14">
-      <img src="icons/Icon_工作日志.png" alt="日志">
       <div class="module-card-title">工作日志</div>
     </div>
 
     <div class="module-card reveal" data-module="essay" data-roman="III" data-depth="0.22">
-      <img src="icons/Icon_随笔.png" alt="随笔">
       <div class="module-card-title">随笔</div>
     </div>
 
     <div class="module-card reveal" data-module="project" data-roman="IV" data-depth="0.14">
-      <img src="icons/Icon_游戏项目.png" alt="项目">
       <div class="module-card-title">游戏项目</div>
     </div>
 
