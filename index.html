@@ -428,12 +428,16 @@
 
   /* --- 手机端兼容 --- */
   @media (max-width: 768px) {
-    .container { padding: 0 20px; margin: 40px auto; }
-    header h1 { font-size: 2.5rem; }
+    .container { 
+      padding: 0 clamp(12px, 4vw, 20px); 
+      margin: 40px auto; 
+      max-width: 100%;
+    }
+    header h1 { font-size: clamp(2rem, 6vw, 2.5rem); }
     #home-grid {
       grid-template-columns: 1fr;
       grid-auto-rows: auto;
-      gap: 18px;
+      gap: clamp(14px, 4vw, 18px);
       padding-bottom: 20px;
     }
 
@@ -441,10 +445,11 @@
       grid-column: 1 / -1;
       grid-row: auto;
       width: 100%;
-      height: 240px;
-      min-height: 240px;
+      height: clamp(180px, 45vw, 240px);
+      min-height: clamp(160px, 40vw, 220px);
       margin-top: 0;
-      border-radius: 30px;
+      border-radius: clamp(20px, 5vw, 30px);
+      padding: clamp(20px, 5vw, 32px);
       transform:
         translate3d(calc(var(--mx, 0px)), calc(var(--parallax, 0px) + var(--my, 0px)), 0)
         rotate(0deg);
@@ -495,10 +500,13 @@
 
     .module-card[data-module] .module-card-title {
       position: absolute;
-      left: 18px;
-      bottom: 18px;
-      padding: 8px 14px;
+      left: clamp(12px, 3vw, 18px);
+      bottom: clamp(12px, 3vw, 18px);
+      padding: clamp(6px, 2vw, 8px) clamp(10px, 3vw, 14px);
       border-radius: 999px;
+      font-size: clamp(1rem, 3.5vw, 1.3rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
       color: var(--label-ink);
       background: rgba(255, 255, 255, 0.26);
       border: none;
@@ -519,9 +527,25 @@
     }
 
     .module-card::before {
-      font-size: 84px;
-      bottom: -34px;
-      left: -8px;
+      font-size: clamp(60px, 15vw, 84px);
+      bottom: clamp(-24px, -6vw, -34px);
+      left: clamp(-6px, -2vw, -8px);
+    }
+
+    /* 更小屏幕的额外优化 */
+    @media (max-width: 480px) {
+      .container { 
+        padding: 0 clamp(8px, 3vw, 12px); 
+      }
+      .module-card[data-module] {
+        height: clamp(140px, 40vw, 180px);
+        min-height: clamp(120px, 35vw, 160px);
+        padding: clamp(16px, 4vw, 24px);
+      }
+      .module-card[data-module] .module-card-title {
+        font-size: clamp(0.9rem, 4vw, 1.1rem);
+        padding: clamp(4px, 1.5vw, 6px) clamp(8px, 2.5vw, 12px);
+      }
     }
   }
 </style>
