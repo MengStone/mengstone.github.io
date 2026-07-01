@@ -1,4 +1,6 @@
 [
+  { "month": "2026-06", "title": "2026年06月", "file": "posts/2026-06.md" },  
+  { "month": "2026-05", "title": "2026年05月", "file": "posts/2026-05.md" },
   { "month": "2026-04", "title": "2026年04月", "file": "posts/2026-04.md" },
   { "month": "2026-03", "title": "2026年03月", "file": "posts/2026-03.md" },
   { "month": "2026-02", "title": "2026年02月", "file": "posts/2026-02.md" },
