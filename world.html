@@ -253,13 +253,16 @@
       flex-wrap: wrap;
     }
 
+    /* 篇号：罗马数字，用欧洲衬线字体 */
     .entry .entry-no {
-      font-family: var(--serif-cn);
-      font-weight: 700;
-      font-size: 0.95rem;
+      font-family: var(--serif-en);
+      font-weight: 600;
+      font-size: 1.05rem;
       color: var(--gold);
-      letter-spacing: 0.2em;
+      letter-spacing: 0.14em;
       flex: none;
+      min-width: 2em;
+      text-align: center;
     }
 
     .entry h2 {
@@ -705,13 +708,15 @@
       entryList.innerHTML = '<p class="empty-tip">此卷目下尚无篇目。</p>';
       return;
     }
-    const cns = ['壹','贰','叁','肆','伍','陆','柒','捌','玖','拾'];
+    // 篇号：罗马数字（中世纪手抄本式）
+    const ROMAN = [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
+    const toRoman = (n) => { let out = ''; for (const [v, s] of ROMAN) { while (n >= v) { out += s; n -= v; } } return out; };
     entryList.innerHTML = filtered.map((e, i) => {
       const tag = (e.tags && e.tags[0]) || '';
       return `
         <a class="entry" href="#/${e.slug}" data-slug="${e.slug}">
           <div class="entry-top">
-            <span class="entry-no">卷·${cns[i]}</span>
+            <span class="entry-no">${toRoman(i + 1)}</span>
             <h2>${escapeHtml(e.title)}</h2>
             <span class="entry-tag">${tag}</span>
           </div>
