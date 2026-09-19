@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>随笔 · 宝箱的网站</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Noto+Serif+SC:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* --- 羊皮手稿 · 随笔 主题变量（象牙灰白，去黄） --- */
+    :root {
+      --paper: #f4f1ea;          /* 纸张底色 */
+      --paper-light: #faf8f3;
+      --paper-deep: #e9e4d9;
+      --ink: #2e2a24;            /* 主墨色 */
+      --ink-soft: rgba(46, 42, 36, 0.62);
+      --ink-faint: rgba(46, 42, 36, 0.34);
+      --seal: #a63a2b;           /* 朱砂（少量点缀） */
+      --seal-soft: rgba(166, 58, 43, 0.1);
+      --gold: #a9843f;           /* 旧金 */
+      --gold-soft: rgba(169, 132, 63, 0.32);
+      --serif-cn: "Noto Serif SC", "Songti SC", "SimSun", serif;
+      --serif-en: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+      --line: rgba(46, 42, 36, 0.16);
+      --radius: 3px;
+      --shadow-paper: 0 20px 46px rgba(84, 74, 52, 0.13), 0 3px 10px rgba(84, 74, 52, 0.07);
+      --transition: all 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scrollbar-gutter: stable; }
+
+    body {
+      margin: 0;
+      font-family: var(--serif-cn);
+      color: var(--ink);
+      line-height: 1.95;
+      -webkit-font-smoothing: antialiased;
+      background-color: var(--paper);
+      /* 纸面：颗粒噪点 + 四角微暗（模拟被翻阅的旧纸），全部内联 SVG / 渐变生成 */
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E"),
+        radial-gradient(1100px 520px at 18% -6%, #fdfcf8 0%, rgba(0,0,0,0) 58%),
+        radial-gradient(880px 520px at 100% 102%, #e7e2d5 0%, rgba(0,0,0,0) 55%),
+        var(--paper);
+      background-attachment: fixed;
+    }
+
+    /* --- 顶部导航 --- */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px clamp(18px, 5vw, 48px);
+      background: rgba(244, 241, 234, 0.84);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .top-nav a {
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 0.95rem;
+      letter-spacing: 0.06em;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: var(--transition);
+    }
+
+    .top-nav a:hover { color: var(--seal); }
+
+    .top-nav .nav-home { font-weight: 600; }
+    .top-nav .nav-brand { font-family: var(--serif-en); font-style: italic; letter-spacing: 0.18em; font-size: 1rem; color: var(--ink-soft); }
+
+    .back-arrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-arrow i {
+      display: inline-block;
+      width: 34px;
+      height: 1px;
+      background: currentColor;
+      position: relative;
+    }
+
+    .back-arrow i::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: -3px;
+      width: 7px;
+      height: 7px;
+      border-left: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+      transform: rotate(45deg);
+    }
+
+    /* --- 卷轴木轴：横贯页面的滚边 --- */
+    .scroll-rod {
+      position: relative;
+      height: 16px;
+      background: linear-gradient(180deg, #ded5c0 0%, #c9bda3 42%, #ab9c7d 62%, #c6b99e 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+        0 6px 16px rgba(92, 80, 54, 0.18);
+    }
+
+    /* 两端的轴头 */
+    .scroll-rod::before,
+    .scroll-rod::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 26px;
+      height: 26px;
+      margin-top: -13px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #c2b599 0%, #9d8e70 100%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 3px 8px rgba(78, 68, 46, 0.22);
+    }
+
+    .scroll-rod::before { left: clamp(8px, 3vw, 26px); }
+    .scroll-rod::after { right: clamp(8px, 3vw, 26px); }
+
+    /* --- 页首 --- */
+    .notes-header {
+      max-width: 780px;
+      margin: clamp(48px, 8vw, 84px) auto 0;
+      padding: 0 clamp(20px, 5vw, 40px);
+      text-align: center;
+    }
+
+    .notes-header .kicker {
+      font-family: var(--serif-en);
+      font-style: italic;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      color: var(--gold);
+      margin: 0 0 16px;
+    }
+
+    .notes-header h1 {
+      font-family: var(--serif-cn);
+      font-weight: 900;
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      letter-spacing: 0.2em;
+      margin: 0;
+      color: var(--ink);
+    }
+
+    /* 简短墨线，替代世界观的菱形饰线 */
+    .notes-header .rule {
+      width: 44px;
+      height: 1px;
+      background: var(--ink-faint);
+      margin: 22px auto 0;
+    }
+
+    .notes-header .preface {
+      max-width: 520px;
+      margin: 20px auto 0;
+      color: var(--ink-soft);
+      font-size: 1rem;
+    }
+
+    /* --- 标签行（纸签式） --- */
+    .tag-bar {
+      max-width: 780px;
+      margin: clamp(30px, 5vw, 44px) auto clamp(26px, 4vw, 40px);
+      padding: 0 clamp(20px, 5vw, 40px);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .tag-bar button {
+      font-family: var(--serif-cn);
+      font-size: 0.86rem;
+      letter-spacing: 0.22em;
+      padding: 5px 15px 5px 19px;
+      color: var(--ink-soft);
+      background: rgba(250, 248, 243, 0.6);
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .tag-bar button:hover { color: var(--ink); border-color: var(--ink-faint); }
+
+    .tag-bar button.active {
+      color: #f7f3ea;
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+
+    /* --- 时间流 --- */
+    .stream {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 clamp(20px, 5vw, 40px) 60px;
+    }
+
+    /* 单张纸页 */
+    .note {
+      position: relative;
+      background:
+        radial-gradient(140% 120% at 12% 0%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 55%),
+        linear-gradient(180deg, var(--paper-light), var(--paper));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-paper);
+      padding: clamp(28px, 5vw, 50px) clamp(22px, 5vw, 54px);
+      margin-bottom: clamp(26px, 4vw, 40px);
+      animation: noteIn 0.6s cubic-bezier(0.19, 1, 0.22, 1) both;
+    }
+
+    /* 右下角卷起的纸角 */
+    .note::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 26px;
+      height: 26px;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0) 48%, rgba(120, 108, 82, 0.16) 50%, var(--paper-deep) 100%);
+      border-bottom-right-radius: var(--radius);
+      pointer-events: none;
+    }
+
+    @keyframes noteIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .note-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    /* 标签贴纸：微微倾斜，像手工贴上去的纸签 */
+    .note-tag {
+      display: inline-block;
+      font-size: 0.74rem;
+      letter-spacing: 0.2em;
+      padding: 2px 11px;
+      color: var(--seal);
+      background: var(--seal-soft);
+      border: 1px solid rgba(166, 58, 43, 0.42);
+      border-radius: 2px;
+      transform: rotate(-0.8deg);
+    }
+
+    .note-date {
+      margin-left: auto;
+      font-family: var(--serif-en);
+      font-style: italic;
+      letter-spacing: 0.14em;
+      font-size: 1.06rem;
+      color: rgba(46, 42, 36, 0.82);
+    }
+
+    .note h2 {
+      margin: 0 0 20px;
+      font-size: clamp(1.28rem, 3.4vw, 1.6rem);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      line-height: 1.6;
+    }
+
+    /* --- 随笔正文 --- */
+    .note-body { font-size: 17px; }
+
+    .note-body p {
+      margin: 0 0 1.25em;
+      text-align: justify;
+      text-indent: 2em; /* 手稿式首行缩进，与世界观的「首字下沉」形成区别 */
+    }
+
+    .note-body p:last-child { margin-bottom: 0; }
+
+    .note-body h2 {
+      font-size: 1.16rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      margin: 1.9em 0 1em;
+      text-align: left;
+    }
+
+    .note-body h3 {
+      font-size: 1.06rem;
+      font-weight: 700;
+      margin: 1.6em 0 0.8em;
+    }
+
+    .note-body blockquote {
+      margin: 1.5em 0;
+      padding: 4px 0 4px 22px;
+      border-left: 2px solid var(--gold-soft);
+      color: var(--ink-soft);
+    }
+
+    .note-body blockquote p { text-indent: 0; margin: 0 0 0.5em; }
+    .note-body blockquote p:last-child { margin: 0; }
+
+    .note-body hr {
+      border: none;
+      height: 12px;
+      margin: 2.2em auto;
+      text-align: center;
+    }
+
+    .note-body hr::after {
+      content: "＊ ＊ ＊";
+      color: var(--ink-faint);
+      font-size: 0.72rem;
+      letter-spacing: 0.6em;
+    }
+
+    .note-body ul, .note-body ol {
+      padding-left: 1.6em;
+      margin: 0 0 1.25em;
+    }
+
+    .note-body li { margin-bottom: 0.45em; }
+
+    .note-body code {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.9em;
+      background: rgba(46, 42, 36, 0.06);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .note-body a {
+      color: var(--seal);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(166, 58, 43, 0.32);
+    }
+
+    .note-body a:hover { border-bottom-color: var(--seal); }
+
+    /* 插图：图注居中显示在图片下方 */
+    .note-body figure.img-figure {
+      margin: 1.7em 0;
+      text-align: center;
+    }
+
+    .note-body figure.img-figure img {
+      display: block;
+      max-width: 100%;
+      margin: 0 auto;
+      border-radius: 2px;
+      border: 1px solid rgba(46, 42, 36, 0.18);
+      box-shadow: 0 12px 30px rgba(84, 74, 52, 0.14);
+    }
+
+    .note-body figcaption {
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: var(--ink-faint);
+      letter-spacing: 0.06em;
+      text-indent: 0;
+    }
+
+    /* 空状态 */
+    .empty-tip {
+      text-align: center;
+      color: var(--ink-soft);
+      padding: 60px 0;
+    }
+
+    footer {
+      margin-top: 40px;
+      padding: 40px 20px 48px;
+      text-align: center;
+      color: var(--ink-soft);
+      font-size: 0.88rem;
+      border-top: 1px solid var(--line);
+    }
+
+    footer a { color: var(--ink); text-decoration: none; font-weight: 700; }
+
+    /* --- 移动端 --- */
+    @media (max-width: 560px) {
+      .note { padding: 24px 20px 32px; }
+      .note-body { font-size: 16px; }
+      .note-date { margin-left: 0; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="index.html" class="back-arrow"><i aria-hidden="true"></i><span>返回主页</span></a>
+    <a href="index.html" class="nav-brand">Treasure Chest's Notes</a>
+  </nav>
+
+  <!-- 卷轴滚边 -->
+  <div class="scroll-rod" aria-hidden="true"></div>
+
+  <!-- 页首 -->
+  <header class="notes-header">
+    <p class="kicker">MengStone · Notes</p>
+    <h1>随笔</h1>
+    <div class="rule" aria-hidden="true"></div>
+    <p class="preface">日记、议论、没想清楚的想法，甚至一些牢骚</p>
+  </header>
+
+  <!-- 标签行 -->
+  <div class="tag-bar" id="tag-bar">
+    <button class="active" data-filter="all">全部</button>
+  </div>
+
+  <!-- 时间流：每篇直接展开全文 -->
+  <main class="stream" id="stream">
+    <p class="empty-tip">正在铺开纸页……</p>
+  </main>
+
+  <footer>
+    &copy; 2025 MengStone · 随笔 · <a href="https://github.com/MengStone" target="_blank">GITHUB</a>
+  </footer>
+
+<script>
+(function () {
+  'use strict';
+
+  const streamEl = document.getElementById('stream');
+  const tagBar = document.getElementById('tag-bar');
+  let notes = [];
+  let currentFilter = 'all';
+
+  // --- Markdown 渲染：支持标题/列表/引用/分割线/图片/行内样式 ---
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function inline(s) {
+    s = escapeHtml(s).replace(/&lt;br&gt;/g, '<br>');
+    s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+    s = s.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank">$1</a>');
+    s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    s = s.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+    return s;
+  }
+
+  function parseMarkdown(md) {
+    if (!md) return '';
+    const lines = md.replace(/\r\n?/g, '\n').split('\n');
+    const html = [];
+    let listType = null; // 'ul' | 'ol' | null
+    let para = [];
+    const flushPara = () => {
+      if (para.length) { html.push(`<p>${inline(para.join('<br>'))}</p>`); para = []; }
+    };
+    const closeList = () => {
+      if (listType) { html.push(`</${listType}>`); listType = null; }
+    };
+    const openList = (t) => { listType = t; html.push(`<${t}>`); };
+
+    for (let line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed) { closeList(); flushPara(); continue; }
+      if (trimmed === '---' || trimmed === '***') { closeList(); flushPara(); html.push('<hr>'); continue; }
+      // 插图：独占一行渲染为 figure，alt 文字作为图注显示在图片下方
+      const img = line.match(/^!\[(.*?)\]\((.+?)\)/);
+      if (img) {
+        closeList(); flushPara();
+        const caption = img[1].trim();
+        html.push(`<figure class="img-figure"><img src="${img[2]}" alt="${escapeHtml(caption)}" />${caption ? `<figcaption>${inline(caption)}</figcaption>` : ''}</figure>`);
+        continue;
+      }
+      const h = line.match(/^(#{1,4})\s+(.+)/);
+      if (h) {
+        closeList(); flushPara();
+        const tag = `h${h[1].length}`;
+        html.push(`<${tag}>${inline(h[2])}</${tag}>`);
+        continue;
+      }
+      const bq = line.match(/^>\s?(.*)/);
+      if (bq) {
+        closeList(); flushPara();
+        html.push(`<blockquote>${inline(bq[1])}</blockquote>`);
+        continue;
+      }
+      const ol = line.match(/^(\d+)[.、]\s+(.+)/);
+      if (ol) { flushPara(); if (listType !== 'ol') { closeList(); openList('ol'); } html.push(`<li>${inline(ol[2])}</li>`); continue; }
+      const ul = line.match(/^[-*]\s+(.+)/);
+      if (ul) { flushPara(); if (listType !== 'ul') { closeList(); openList('ul'); } html.push(`<li>${inline(ul[1])}</li>`); continue; }
+      para.push(line.trim());
+    }
+    closeList(); flushPara();
+    return html.join('\n');
+  }
+
+  // --- 日期显示：2026-08-09 → 2026 · 08 · 09 ---
+  function formatDate(d) {
+    if (!d) return '';
+    const m = String(d).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return m ? `${m[1]} · ${m[2]} · ${m[3]}` : d;
+  }
+
+  // --- 渲染标签行（依据清单中实际出现的标签） ---
+  function renderTagBar() {
+    const used = [];
+    notes.forEach(n => (n.tags || []).forEach(t => { if (!used.includes(t)) used.push(t); }));
+    tagBar.innerHTML = ['<button class="active" data-filter="all">全部</button>']
+      .concat(used.map(t => `<button data-filter="${escapeHtml(t)}">${escapeHtml(t)}</button>`))
+      .join('');
+  }
+
+  // --- 渲染时间流（按日期倒序，全文直接展开） ---
+  async function renderStream() {
+    const filtered = currentFilter === 'all'
+      ? notes
+      : notes.filter(n => (n.tags || []).includes(currentFilter));
+    if (!filtered.length) {
+      streamEl.innerHTML = '<p class="empty-tip">这里还空着。</p>';
+      return;
+    }
+    streamEl.innerHTML = '<p class="empty-tip">正在铺开纸页……</p>';
+    const cards = await Promise.all(filtered.map(async (n) => {
+      let body = '';
+      try {
+        const resp = await fetch(n.file, { cache: 'no-store' });
+        body = parseMarkdown(await resp.text());
+      } catch (e) {
+        body = '<p>这一页还没抄好。</p>';
+      }
+      const tag = (n.tags && n.tags[0]) || '';
+      return `
+        <article class="note">
+          <div class="note-head">
+            <span class="note-tag">${escapeHtml(tag)}</span>
+            <span class="note-date">${escapeHtml(formatDate(n.date))}</span>
+          </div>
+          <h2>${escapeHtml(n.title)}</h2>
+          <div class="note-body">${body}</div>
+        </article>`;
+    }));
+    streamEl.innerHTML = cards.join('');
+  }
+
+  // --- 标签筛选 ---
+  tagBar.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    tagBar.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    renderStream();
+  });
+
+  // --- 加载随笔清单（no-store 避免浏览器缓存旧清单） ---
+  fetch('essays/essays.json', { cache: 'no-store' })
+    .then(r => r.json())
+    .then(data => {
+      // 按日期升序：早的在上
+      notes = data.slice().sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')));
+      renderTagBar();
+      renderStream();
+    })
+    .catch(() => {
+      streamEl.innerHTML = '<p class="empty-tip">纸页加载失败，请稍后再试。</p>';
+    });
+})();
+</script>
+</body>
+</html>

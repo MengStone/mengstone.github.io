@@ -1,0 +1,51 @@
+[
+  {
+    "slug": "city-ember-falls",
+    "title": "烬落城",
+    "tags": ["城市"],
+    "excerpt": "灰烬从不曾真正冷却。这座建在旧神残骸上的城市，每条街巷都埋着不愿开口的历史。（示例占位篇）",
+    "file": "world/cities/city-ember-falls.md"
+  },
+  {
+    "slug": "person-lantern-keeper",
+    "title": "守灯人阿昼",
+    "tags": ["人物"],
+    "excerpt": "他不记得自己守了多久的灯，只记得灯灭的那一夜，整座城的人都听见了叹息。（示例占位篇）",
+    "file": "world/persons/person-lantern-keeper.md"
+  },
+  {
+    "slug": "warrior-aina",
+    "title": "战士艾娜",
+    "tags": ["人物"],
+    "excerpt": "一把剑若永远听从命令，挥剑的人还有自己的意志吗？她制造死亡的假象，只为离开那座名为家族的战场。",
+    "file": "world/persons/warrior-aina.md"
+  },
+  {
+    "slug": "person-young-sandrick",
+    "title": "少年桑德里克",
+    "tags": ["人物"],
+    "excerpt": "因为觉得村里的生活太无聊，他离开了村子。多年以后，父母总会收到一笔来自远方的钱，信上只有一句话：我很好。",
+    "file": "world/persons/person-young-sandrick.md"
+  },
+  {
+    "slug": "elf-ranger-alice",
+    "title": "精灵游侠艾莉丝",
+    "tags": ["人物"],
+    "excerpt": "家族世代守护精灵王族，荣耀却毁于一夜间。失去姓氏的她成为游侠，穿过森林与荒野，只相信手中的弓箭。",
+    "file": "world/persons/elf-ranger-alice.md"
+  },
+  {
+    "slug": "event-shattering",
+    "title": "裂空之纪",
+    "tags": ["事件"],
+    "excerpt": "天空裂开的那一天，历法被重新书写。旧神坠落，新神未生，世界第一次无人应答。（示例占位篇）",
+    "file": "world/events/event-shattering.md"
+  },
+  {
+    "slug": "artifact-mother-tide",
+    "title": "母潮之珠",
+    "tags": ["物品"],
+    "excerpt": "据说是海神咽下的最后一颗泪。它总在涨潮时分自己发光，并且，总会引来不该来的东西。（示例占位篇）",
+    "file": "world/items/artifact-mother-tide.md"
+  }
+]

@@ -758,6 +758,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const showModule = async (key) => {
+      // 世界观设定集为独立页面（world.html）
+      if (key === 'world') { window.location.href = 'world.html'; return; }
+
+      // 随笔为独立页面（essays.html）
+      if (key === 'essay') { window.location.href = 'essays.html'; return; }
+
       homeGrid.style.display = 'none';
       moduleView.style.display = 'block';
       setTimeout(() => moduleView.classList.add('active'), 10);
