@@ -1,5 +1,12 @@
 [
   {
+    "slug": "boiled-eggs-and-bread",
+    "title": "煮鸡蛋与面包",
+    "date": "2026-09-20",
+    "tags": ["日记"],
+    "file": "essays/boiled-eggs-and-bread.md"
+  },
+  {
     "slug": "washing-bedding-in-shanghai",
     "title": "洗床单",
     "date": "2026-09-19",
@@ -8,14 +15,14 @@
   },
   {
     "slug": "second-cooking-in-shanghai",
-    "title": "第二次开火",
+    "title": "在上海的第二次开火",
     "date": "2026-09-12",
     "tags": ["日记"],
     "file": "essays/second-cooking-in-shanghai.md"
   },
   {
     "slug": "first-cooking-in-shanghai",
-    "title": "第一次开火",
+    "title": "在上海的第一次开火",
     "date": "2026-09-06",
     "tags": ["日记"],
     "file": "essays/first-cooking-in-shanghai.md"

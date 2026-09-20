@@ -215,9 +215,13 @@
       padding: 0 clamp(20px, 5vw, 40px) 60px;
     }
 
-    /* 单张纸页 */
+    /* 单张纸页：缩略态为「左封面 + 右摘要」，展开后就地铺开全文 */
     .note {
       position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 0 28px;
       background:
         radial-gradient(140% 120% at 12% 0%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 55%),
         linear-gradient(180deg, var(--paper-light), var(--paper));
@@ -227,6 +231,87 @@
       padding: clamp(28px, 5vw, 50px) clamp(22px, 5vw, 54px);
       margin-bottom: clamp(26px, 4vw, 40px);
       animation: noteIn 0.6s cubic-bezier(0.19, 1, 0.22, 1) both;
+    }
+
+    /* 封面：像贴在纸页上的一张照片（白边 + 微倾 + 投影） */
+    .note-cover {
+      flex: 0 0 208px;
+      padding: 8px;
+      background: #fbf8f1;
+      border: 1px solid rgba(46, 42, 36, 0.12);
+      box-shadow: 0 5px 14px rgba(84, 74, 52, 0.16);
+      transform: rotate(-1.2deg);
+      transition: var(--transition);
+    }
+
+    .note-cover img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: 1px;
+    }
+
+    .note:hover .note-cover { transform: rotate(0deg); }
+
+    /* 摘要区：标签、标题、首段、展开按钮 */
+    .note-summary {
+      flex: 1 1 300px;
+      min-width: 0;
+    }
+
+    /* 首段摘要：限三行，超出由浏览器补省略号 */
+    .note-excerpt {
+      margin: 0 0 18px;
+      color: var(--ink-soft);
+      font-size: 0.98rem;
+      line-height: 1.95;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .note-toggle {
+      font-family: var(--serif-cn);
+      font-size: 0.98rem;
+      letter-spacing: 0.16em;
+      color: var(--ink-soft);
+      background: none;
+      border: none;
+      border-bottom: 1px solid rgba(46, 42, 36, 0.3);
+      padding: 7px 14px 6px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .note-toggle:hover {
+      color: var(--ink);
+      border-bottom-color: var(--ink);
+    }
+
+    /* 展开后：摘要区的展开按钮让位，改由篇尾的「收起」承担 */
+    .note.expanded .note-summary .note-toggle { display: none; }
+
+    .note-toggle-end {
+      display: none;
+      flex: 0 0 auto;
+      margin-top: 30px;
+    }
+
+    .note.expanded .note-toggle-end { display: inline-block; }
+
+    /* 展开后不再占位首图缩略图，正文直接铺满整幅 */
+    .note.expanded .note-cover { display: none; }
+
+    /* 展开后：题头改为整幅文章式排布——缩略图让位，标题独占一行并落一道墨线 */
+    .note.expanded .note-summary { flex: 1 1 100%; }
+
+    .note.expanded .note-summary h2 {
+      font-size: clamp(1.5rem, 4vw, 1.9rem);
+      margin-bottom: 0;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
     }
 
     /* 右下角卷起的纸角 */
@@ -278,15 +363,25 @@
     }
 
     .note h2 {
-      margin: 0 0 20px;
+      margin: 0 0 14px;
       font-size: clamp(1.28rem, 3.4vw, 1.6rem);
       font-weight: 700;
       letter-spacing: 0.05em;
       line-height: 1.6;
     }
 
-    /* --- 随笔正文 --- */
-    .note-body { font-size: 17px; }
+    /* --- 随笔正文：默认收起，展开后就地铺开 --- */
+    .note-body {
+      display: none;
+      flex: 1 1 100%;
+      margin-top: 22px;
+      font-size: 17px;
+    }
+
+    .note.expanded .note-body { display: block; }
+
+    /* 展开后摘要让位给全文，避免首段重复出现 */
+    .note.expanded .note-excerpt { display: none; }
 
     .note-body p {
       margin: 0 0 1.25em;
@@ -403,6 +498,8 @@
       .note { padding: 24px 20px 32px; }
       .note-body { font-size: 16px; }
       .note-date { margin-left: 0; width: 100%; }
+      /* 窄屏：封面移到标题上方，并限制宽度避免占满整屏 */
+      .note-cover { flex: 1 1 100%; max-width: 240px; margin-bottom: 20px; }
     }
   </style>
 </head>
@@ -429,7 +526,7 @@
     <button class="active" data-filter="all">全部</button>
   </div>
 
-  <!-- 时间流：每篇直接展开全文 -->
+  <!-- 时间流：缩略列表，点击就地展开全文 -->
   <main class="stream" id="stream">
     <p class="empty-tip">正在铺开纸页……</p>
   </main>
@@ -527,7 +624,7 @@
       .join('');
   }
 
-  // --- 渲染时间流（按日期倒序，全文直接展开） ---
+  // --- 渲染时间流（按日期升序，缩略列表，点击就地展开全文） ---
   async function renderStream() {
     const filtered = currentFilter === 'all'
       ? notes
@@ -545,15 +642,27 @@
       } catch (e) {
         body = '<p>这一页还没抄好。</p>';
       }
+      // 从正文中自动挑出首图作封面、首段作摘要，清单里无需额外配置
+      const probe = document.createElement('div');
+      probe.innerHTML = body;
+      const cover = probe.querySelector('img');
+      const firstPara = Array.from(probe.querySelectorAll('p')).find(p => p.textContent.trim());
+      const excerpt = firstPara ? firstPara.textContent.trim() : '';
       const tag = (n.tags && n.tags[0]) || '';
       return `
         <article class="note">
-          <div class="note-head">
-            <span class="note-tag">${escapeHtml(tag)}</span>
-            <span class="note-date">${escapeHtml(formatDate(n.date))}</span>
+          ${cover ? `<div class="note-cover"><img src="${cover.getAttribute('src')}" alt="" loading="lazy" /></div>` : ''}
+          <div class="note-summary">
+            <div class="note-head">
+              <span class="note-tag">${escapeHtml(tag)}</span>
+              <span class="note-date">${escapeHtml(formatDate(n.date))}</span>
+            </div>
+            <h2>${escapeHtml(n.title)}</h2>
+            ${excerpt ? `<p class="note-excerpt">${escapeHtml(excerpt)}</p>` : ''}
+            <button class="note-toggle" type="button">阅读全文</button>
           </div>
-          <h2>${escapeHtml(n.title)}</h2>
           <div class="note-body">${body}</div>
+          <button class="note-toggle note-toggle-end" type="button">收起</button>
         </article>`;
     }));
     streamEl.innerHTML = cards.join('');
@@ -567,6 +676,16 @@
     btn.classList.add('active');
     currentFilter = btn.dataset.filter;
     renderStream();
+  });
+
+  // --- 点击卡片就地展开；展开后正文里只有篇尾「收起」按钮能收回 ---
+  streamEl.addEventListener('click', (e) => {
+    const note = e.target.closest('.note');
+    if (!note) return;
+    const isExpanded = note.classList.contains('expanded');
+    // 已展开时只有按钮能收起，避免阅读正文时误触
+    if (isExpanded && !e.target.closest('.note-toggle')) return;
+    note.classList.toggle('expanded');
   });
 
   // --- 加载随笔清单（no-store 避免浏览器缓存旧清单） ---
