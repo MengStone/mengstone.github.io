@@ -1,5 +1,12 @@
 [
   {
+    "slug": "mid-autumn-beef-hotpot",
+    "title": "中秋",
+    "date": "2026-09-25",
+    "tags": ["日记"],
+    "file": "essays/mid-autumn-beef-hotpot.md"
+  },
+  {
     "slug": "boiled-eggs-and-bread",
     "title": "煮鸡蛋与面包",
     "date": "2026-09-20",
