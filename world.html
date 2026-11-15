@@ -4,10 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>故事 · 宝箱的网站</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Noto+Serif+SC:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
+    /* --- 自托管字体：本地文件，不请求任何外部资源 --- */
+    @font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 500; font-display: swap; src: url("fonts/cormorant-garamond-latin-500-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/cormorant-garamond-latin-600-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 700; font-display: swap; src: url("fonts/cormorant-garamond-latin-700-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Cormorant Garamond"; font-style: italic; font-weight: 500; font-display: swap; src: url("fonts/cormorant-garamond-latin-500-italic.woff2") format("woff2"); }
     /* --- 羊皮纸 · 故事集 主题变量 --- */
     :root {
       --ink: #33261b;            /* 主墨色 */
@@ -20,7 +22,7 @@
       --seal-red-soft: rgba(166, 58, 43, 0.12);
       --gold: #a9843f;           /* 旧金 */
       --gold-soft: rgba(169, 132, 63, 0.35);
-      --serif-cn: "Noto Serif SC", "Songti SC", "SimSun", serif;
+      --serif-cn: "Songti SC", "STSong", "SimSun", "Noto Serif SC", "Source Han Serif SC", serif;
       --serif-en: "Cormorant Garamond", "Playfair Display", Georgia, serif;
       --line: rgba(51, 38, 27, 0.18);
       --radius: 10px;
@@ -30,7 +32,7 @@
 
     * { box-sizing: border-box; }
 
-    html { scrollbar-gutter: stable; }
+    html { scrollbar-gutter: stable; font-size: 17px; }
 
     body {
       margin: 0;
@@ -66,7 +68,7 @@
     .top-nav a {
       color: var(--ink);
       text-decoration: none;
-      font-size: 0.95rem;
+      font-size: 1rem;
       letter-spacing: 0.06em;
       display: inline-flex;
       align-items: center;
@@ -104,6 +106,32 @@
       border-bottom: 1px solid currentColor;
       transform: rotate(45deg);
     }
+
+    /* --- 导航左侧：返回主页 + 返回上一级 --- */
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .up-link {
+      position: relative;
+      padding-left: 20px;
+    }
+
+    .up-link::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 1px;
+      height: 14px;
+      margin-top: -7px;
+      background: var(--line);
+    }
+
+    .up-link span { color: var(--ink-soft); font-size: 0.95rem; }
+    .up-link:hover span { color: var(--ink); }
 
     /* --- 卷首 --- */
     .chronicle-header {
@@ -382,7 +410,7 @@
     .bio-head .ornament::before, .bio-head .ornament::after { width: clamp(40px, 10vw, 80px); }
 
     /* --- 正文排版 --- */
-    .chronicle-body { font-size: 17px; }
+    .chronicle-body { font-size: 18px; }
 
     /* 首字下沉 */
     .chronicle-body .drop-cap::first-letter {
@@ -560,39 +588,124 @@
 
     footer a { color: var(--ink); text-decoration: none; font-weight: 700; }
 
+    /* --- 双界切换 --- */
+    .universe-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: clamp(30px, 5vw, 44px) auto 0;
+      padding: 0 clamp(20px, 5vw, 40px);
+      font-size: 0.88rem;
+      letter-spacing: 0.3em;
+    }
+
+    .universe-bar a {
+      color: var(--ink-faint);
+      text-decoration: none;
+      padding-bottom: 5px;
+      border-bottom: 1px solid transparent;
+      transition: var(--transition);
+    }
+
+    .universe-bar a:hover { color: var(--ink-soft); }
+
+    .universe-bar a.current {
+      color: var(--seal-red);
+      border-bottom-color: var(--seal-red);
+    }
+
+    .universe-bar .sep { color: var(--ink-faint); letter-spacing: 0; }
+
+    /* ================= 修仙 · 绢本水墨 ================= */
+    body[data-universe="eastern"] {
+      --ink: #1c2420;
+      --ink-soft: rgba(28, 36, 32, 0.60);
+      --ink-faint: rgba(28, 36, 32, 0.32);
+      --parchment: #eef0ec;
+      --parchment-light: #f7f8f5;
+      --parchment-deep: #dde3dc;
+      --seal-red: #a63a2b;
+      --seal-red-soft: rgba(166, 58, 43, 0.09);
+      --gold: #5c8d76;
+      --gold-soft: rgba(92, 141, 118, 0.32);
+      --serif-cn: "KaiTi", "STKaiti", "Kaiti SC", "Songti SC", "STSong", "SimSun", serif;
+      --line: rgba(28, 36, 32, 0.15);
+      --shadow-paper: 0 30px 70px rgba(38, 58, 48, 0.13), 0 6px 18px rgba(38, 58, 48, 0.07);
+      background-color: var(--parchment);
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"),
+        radial-gradient(1100px 520px at 16% -6%, #fbfcfa 0%, rgba(0,0,0,0) 60%),
+        radial-gradient(900px 520px at 100% 102%, #e0e7e0 0%, rgba(0,0,0,0) 55%),
+        var(--parchment);
+      background-attachment: fixed;
+    }
+
+    /* 饰线：菱形换成实心圆 */
+    body[data-universe="eastern"] .ornament .diamond {
+      width: 9px;
+      height: 9px;
+      background: var(--seal-red);
+      border: none;
+      border-radius: 50%;
+      transform: none;
+    }
+
+    /* 卷首标题用楷体，正文保持宋体便于长文阅读 */
+    body[data-universe="eastern"] .chronicle-header,
+    body[data-universe="eastern"] .bio-head {
+      font-family: "KaiTi", "STKaiti", "Kaiti SC", "Songti SC", serif;
+    }
+
+    body[data-universe="eastern"] .entry-no {
+      letter-spacing: 0;
+      font-size: 1.02rem;
+    }
+
     /* --- 移动端 --- */
     @media (max-width: 560px) {
       .entry { padding: 20px 20px; }
       .entry .entry-tag { margin-left: 0; }
-      .chronicle-body { font-size: 16px; }
+      .chronicle-body { font-size: 17px; }
       .biography { padding: 26px 20px 40px; }
       .biography::before { inset: 8px; }
     }
   </style>
 </head>
 <body>
+<script>
+  // 先定主题，避免西幻的暖黄配色闪一下
+  (function () {
+    var u = new URLSearchParams(location.search).get('u');
+    document.body.setAttribute('data-universe', u === 'eastern' ? 'eastern' : 'western');
+  })();
+</script>
 
   <nav class="top-nav">
-    <a href="index.html" class="back-arrow"><i aria-hidden="true"></i><span>返回主页</span></a>
-    <a href="index.html" class="nav-brand">Treasure Chest's Tales</a>
+    <div class="nav-left">
+      <a href="index.html" class="back-arrow"><i aria-hidden="true"></i><span>返回主页</span></a>
+      <a href="worlds.html" class="up-link" id="back-prev"><span>返回上一级</span></a>
+    </div>
+    <a href="index.html" class="nav-brand" id="nav-brand">Treasure Chest's Tales</a>
   </nav>
 
   <!-- 卷首 -->
   <header class="chronicle-header">
-    <p class="kicker">MengStone · Tales of the World</p>
-    <h1>故事</h1>
-    <p class="preface">这方世界的往事，从不曾收拢成一部大书。城市、人物、事件与物品各自成篇，如散落书架的旧册——每一篇都是独立的故事，任意翻开一页，便是其中一段。</p>
+    <p class="kicker" id="page-kicker">MengStone · Tales of the World</p>
+    <h1 id="page-title">故事</h1>
+    <p class="preface" id="page-preface">这方世界的往事，从不曾收拢成一部大书。城市、人物、事件与物品各自成篇，如散落书架的旧册——每一篇都是独立的故事，任意翻开一页，便是其中一段。</p>
     <div class="ornament"><span class="diamond"></span></div>
   </header>
 
-  <!-- 卷目筛选 -->
-  <div class="seal-bar" id="seal-bar">
-    <button class="seal active" data-filter="all">全部</button>
-    <button class="seal" data-filter="人物">人物</button>
-    <button class="seal" data-filter="城市">城市</button>
-    <button class="seal" data-filter="事件">事件</button>
-    <button class="seal" data-filter="物品">物品</button>
-  </div>
+  <!-- 双界切换 -->
+  <nav class="universe-bar" id="universe-bar">
+    <a href="?u=western" data-universe="western">西幻</a>
+    <span class="sep">·</span>
+    <a href="?u=eastern" data-universe="eastern">修仙</a>
+  </nav>
+
+  <!-- 卷目筛选，按当前世界的篇目生成 -->
+  <div class="seal-bar" id="seal-bar"></div>
 
   <!-- 索引视图 -->
   <div id="view-index" class="view active">
@@ -625,7 +738,7 @@
 
   <footer>
     <div class="ornament"><span class="diamond"></span></div>
-    &copy; 2025 MengStone · 故事 · <a href="https://github.com/MengStone" target="_blank">GITHUB</a>
+    &copy; 2025 <span id="foot-brand">MengStone · 故事</span> · <a href="https://github.com/MengStone" target="_blank" id="foot-link">GITHUB</a>
   </footer>
 
 <script>
@@ -637,9 +750,51 @@
   const entryList = document.getElementById('entry-list');
   const sealBar = document.getElementById('seal-bar');
   const chronicleHeader = document.querySelector('.chronicle-header');
+  const universeBar = document.getElementById('universe-bar');
   let entries = [];
   let currentFilter = 'all';
   let currentSlug = null;
+
+  // --- 两个世界：同一套页面，两套文案与主题 ---
+  const UNIVERSE = document.body.getAttribute('data-universe') === 'eastern' ? 'eastern' : 'western';
+
+  const WORLDS = {
+    western: {
+      data: 'world/western/world.json',
+      kicker: 'MengStone · Tales of the World',
+      title: '故事',
+      preface: '这方世界的往事，从不曾收拢成一部大书。城市、人物、事件与物品各自成篇，如散落书架的旧册——每一篇都是独立的故事，任意翻开一页，便是其中一段。',
+      brand: "Treasure Chest's Tales",
+      footBrand: 'MengStone · 故事',
+      footLink: 'GITHUB',
+      docTitle: '故事 · 宝箱的网站',
+      talePrefix: 'Tale · '
+    },
+    eastern: {
+      data: 'world/eastern/world.json',
+      kicker: '宝箱 · 修真志',
+      title: '修真志',
+      preface: '此界以修真为道。宗门、人物、纪闻与器物各自成篇——或为一场天劫，或为一炉丹药的成败。大大小小，皆入此志。',
+      brand: '宝箱 · 修真志',
+      footBrand: '宝箱 · 修真志',
+      footLink: '代码仓库',
+      docTitle: '修真志 · 宝箱的网站',
+      talePrefix: ''
+    }
+  };
+
+  const W = WORLDS[UNIVERSE];
+
+  document.getElementById('page-kicker').textContent = W.kicker;
+  document.getElementById('page-title').textContent = W.title;
+  document.getElementById('page-preface').textContent = W.preface;
+  document.getElementById('nav-brand').textContent = W.brand;
+  document.getElementById('foot-brand').textContent = W.footBrand;
+  document.getElementById('foot-link').textContent = W.footLink;
+  document.title = W.docTitle;
+  universeBar.querySelectorAll('a').forEach(function (a) {
+    a.classList.toggle('current', a.dataset.universe === UNIVERSE);
+  });
 
   // --- 增强版 Markdown 渲染：支持标题/列表/引用/分割线/图片/行内样式 ---
   function escapeHtml(s) {
@@ -711,12 +866,22 @@
     // 篇号：罗马数字（中世纪手抄本式）
     const ROMAN = [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
     const toRoman = (n) => { let out = ''; for (const [v, s] of ROMAN) { while (n >= v) { out += s; n -= v; } } return out; };
+    // 修仙界不用罗马数字，改用汉字篇号
+    const CN_DIGIT = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+    const toChinese = (n) => {
+      if (n <= 9) return CN_DIGIT[n];
+      if (n === 10) return '十';
+      if (n < 20) return '十' + CN_DIGIT[n - 10];
+      if (n < 100) return CN_DIGIT[Math.floor(n / 10)] + '十' + (n % 10 ? CN_DIGIT[n % 10] : '');
+      return String(n);
+    };
+    const entryNo = (n) => (UNIVERSE === 'eastern' ? toChinese(n) : toRoman(n));
     entryList.innerHTML = filtered.map((e, i) => {
       const tag = (e.tags && e.tags[0]) || '';
       return `
         <a class="entry" href="#/${e.slug}" data-slug="${e.slug}">
           <div class="entry-top">
-            <span class="entry-no">${toRoman(i + 1)}</span>
+            <span class="entry-no">${entryNo(i + 1)}</span>
             <h2>${escapeHtml(e.title)}</h2>
             <span class="entry-tag">${tag}</span>
           </div>
@@ -733,11 +898,12 @@
     // 详情视图下隐藏卷首与筛选栏
     chronicleHeader.classList.add('hidden');
     sealBar.classList.add('hidden');
-    document.getElementById('bio-kicker').textContent = 'Tale · ' + (entry.tags || []).join(' · ');
+    universeBar.classList.add('hidden');
+    document.getElementById('bio-kicker').textContent = W.talePrefix + (entry.tags || []).join(' · ');
     document.getElementById('bio-title').textContent = entry.title;
     document.getElementById('bio-meta').innerHTML = `
       <span class="tag">${escapeHtml((entry.tags || []).join(' / '))}</span>`;
-    document.title = entry.title + ' · 故事';
+    document.title = entry.title + ' · ' + W.title;
 
     // 上一篇 / 下一篇（按目录顺序）
     const idx = entries.findIndex(e => e.slug === slug);
@@ -778,10 +944,11 @@
       renderDetail(hash);
     } else {
       currentSlug = null;
-      document.title = '故事 · 宝箱的网站';
+      document.title = W.docTitle;
       // 回到目录时恢复卷首与筛选栏
       chronicleHeader.classList.remove('hidden');
       sealBar.classList.remove('hidden');
+      universeBar.classList.remove('hidden');
       VIEW_DETAIL.classList.remove('active');
       VIEW_INDEX.classList.add('active');
       window.scrollTo({ top: 0 });
@@ -808,6 +975,17 @@
     location.hash = '#/';
   });
 
+  // 「返回上一级」按层级走，一层一层退，不是浏览器历史：
+  //   正文 → 本世界的目录；目录 → 选择世界。
+  document.getElementById('back-prev').addEventListener('click', function (e) {
+    e.preventDefault();
+    if (location.hash && location.hash !== '#/') {
+      location.hash = '#/';
+    } else {
+      window.location.href = 'worlds.html';
+    }
+  });
+
   // 上一篇/下一篇用 hash 跳转（阻止默认空链接）
   document.getElementById('bio-prev').addEventListener('click', (e) => {
     e.preventDefault();
@@ -822,11 +1000,22 @@
     }
   });
 
+  // --- 卷目按钮：按当前世界的分类生成 ---
+  function renderSeals() {
+    const tags = [];
+    entries.forEach(e => (e.tags || []).forEach(t => {
+      if (tags.indexOf(t) < 0) tags.push(t);
+    }));
+    sealBar.innerHTML = '<button class="seal active" data-filter="all">全部</button>' +
+      tags.map(t => '<button class="seal" data-filter="' + escapeHtml(t) + '">' + escapeHtml(t) + '</button>').join('');
+  }
+
   // --- 加载篇目清单（no-store 避免浏览器缓存旧清单） ---
-  fetch('world/world.json', { cache: 'no-store' })
+  fetch(W.data, { cache: 'no-store' })
     .then(r => r.json())
     .then(data => {
       entries = data;
+      renderSeals();
       renderIndex();
       route();
     })

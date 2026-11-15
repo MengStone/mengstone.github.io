@@ -1,4 +1,4 @@
-![](essays/images/washing-bedding-in-shanghai/01.jpg)
+![](essays/images/washing-bedding-in-shanghai/01.webp)
 
 今天洗了床单和枕巾。
 

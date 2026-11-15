@@ -4,10 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>随笔 · 宝箱的网站</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Noto+Serif+SC:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
+    /* --- 自托管字体：本地文件，不请求任何外部资源 --- */
+    @font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 500; font-display: swap; src: url("fonts/cormorant-garamond-latin-500-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/cormorant-garamond-latin-600-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 700; font-display: swap; src: url("fonts/cormorant-garamond-latin-700-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Cormorant Garamond"; font-style: italic; font-weight: 500; font-display: swap; src: url("fonts/cormorant-garamond-latin-500-italic.woff2") format("woff2"); }
     /* --- 羊皮手稿 · 随笔 主题变量（象牙灰白，去黄） --- */
     :root {
       --paper: #f4f1ea;          /* 纸张底色 */
@@ -20,7 +22,7 @@
       --seal-soft: rgba(166, 58, 43, 0.1);
       --gold: #a9843f;           /* 旧金 */
       --gold-soft: rgba(169, 132, 63, 0.32);
-      --serif-cn: "Noto Serif SC", "Songti SC", "SimSun", serif;
+      --serif-cn: "Songti SC", "STSong", "SimSun", "Noto Serif SC", "Source Han Serif SC", serif;
       --serif-en: "Cormorant Garamond", "Playfair Display", Georgia, serif;
       --line: rgba(46, 42, 36, 0.16);
       --radius: 3px;

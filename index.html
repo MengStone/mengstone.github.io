@@ -4,10 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>宝箱的网站</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <style>
+    /* --- 自托管字体：本地文件，不请求任何外部资源 --- */
+    @font-face { font-family: "Playfair Display"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/playfair-display-latin-600-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Playfair Display"; font-style: normal; font-weight: 700; font-display: swap; src: url("fonts/playfair-display-latin-700-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Inter"; font-style: normal; font-weight: 300; font-display: swap; src: url("fonts/inter-latin-300-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Inter"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/inter-latin-400-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Inter"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/inter-latin-600-normal.woff2") format("woff2"); }
     /* --- 变量定义 --- */
     :root {
       --bg-color: #f4f4f5;
@@ -22,8 +25,8 @@
       --shadow-soft: 0 22px 60px rgba(0,0,0,0.08);
       --shadow-tight: 0 14px 34px rgba(0,0,0,0.07);
       --transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-      --serif: "Playfair Display", "Georgia", "Times New Roman", serif;
-      --sans: "Inter", -apple-system, "SF Pro Display", "PingFang SC", "Helvetica Neue", sans-serif;
+      --serif: "Playfair Display", "Georgia", "Times New Roman", "Songti SC", "SimSun", serif;
+      --sans: "Inter", "Segoe UI", -apple-system, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
     }
 
     /* --- 全局样式 --- */
@@ -86,8 +89,6 @@
 
     .module-card {
       background-color: var(--card-bg);
-      backdrop-filter: blur(var(--glass-blur));
-      -webkit-backdrop-filter: blur(var(--glass-blur));
       border: none;
       border-radius: var(--border-radius);
       padding: 32px;
@@ -134,10 +135,11 @@
     .module-card[data-module="world"] { grid-column: 1 / span 6; grid-row: 1 / span 7; z-index: 1; --dx: 8px; --dy: 10px; }
     .module-card[data-module="log"] { grid-column: 7 / span 2; grid-row: 2 / span 6; z-index: 5; --dx: -18px; --dy: 46px; }
     .module-card[data-module="essay"] { grid-column: 6 / span 2; grid-row: 1 / span 3; z-index: 6; --dx: 16px; --dy: -18px; }
-    .module-card[data-module="project"] { grid-column: 2 / span 6; grid-row: 8 / span 2; z-index: 4; --dx: -10px; --dy: -6px; }
+    .module-card[data-module="project"] { grid-column: 1 / span 3; grid-row: 8 / span 2; z-index: 4; --dx: -10px; --dy: -6px; }
+    .module-card[data-module="toolbox"] { grid-column: 4 / span 5; grid-row: 8 / span 3; z-index: 3; --dx: 6px; --dy: -10px; }
 
     .module-card[data-module="world"] {
-      background-image: url("images/世界观栏目背景图.png");
+      background-image: url("images/世界观栏目背景图.webp");
       background-size: cover;
       background-position: center;
       box-shadow: 0 0 0 12px rgba(244, 244, 245, 0.72), var(--shadow-tight);
@@ -196,7 +198,7 @@
 
     .module-card[data-module="log"] {
       padding: 30px 28px;
-      background-image: url("images/工作日志背景竖版.png");
+      background-image: url("images/工作日志背景竖版.webp");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -245,7 +247,7 @@
       display: grid;
       place-items: center;
       text-align: center;
-      background-image: url("images/随笔背景2.png");
+      background-image: url("images/随笔背景2.webp");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -290,7 +292,13 @@
     }
 
     .module-card[data-module="project"] {
-      background: linear-gradient(135deg, rgba(18,18,20,0.92), rgba(16,24,40,0.92));
+      background-image:
+        linear-gradient(135deg, rgba(18,18,20,0.80), rgba(16,24,40,0.66)),
+        url("images/mobile_游戏项目背景.webp");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #14181f;
       color: rgba(255,255,255,0.92);
       box-shadow: 0 0 0 12px rgba(244, 244, 245, 0.72), var(--shadow-tight);
     }
@@ -312,11 +320,60 @@
       color: rgba(255,255,255,0.96);
     }
 
+    /* --- 模块：宝箱的百宝箱（暗木底色先打底，背景图到位后自动覆盖） --- */
+    .module-card[data-module="toolbox"] {
+      background-color: #241c15;
+      background-image:
+        url("images/百宝箱栏目背景图.png"),
+        linear-gradient(150deg, #3a2f24 0%, #241c15 48%, #17120e 100%);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      box-shadow: 0 0 0 12px rgba(244, 244, 245, 0.72), var(--shadow-tight);
+    }
+
+    .module-card[data-module="toolbox"]:hover {
+      box-shadow: 0 0 0 12px rgba(244, 244, 245, 0.72), var(--shadow-soft);
+    }
+
+    .module-card[data-module="toolbox"]::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201, 162, 39, 0.10), rgba(12, 10, 8, 0.46));
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .module-card[data-module="toolbox"]::before {
+      color: rgba(240, 230, 210, 0.12);
+    }
+
+    .module-card[data-module="toolbox"] .module-card-title {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--label-ink);
+      background: rgba(255, 255, 255, 0.14);
+      border: none;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      text-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.22),
+        0 2px 6px rgba(0, 0, 0, 0.18);
+    }
+
     .contact-link {
-      grid-column: 6 / span 3;
+      grid-column: 1 / span 3;
       grid-row: 10 / span 1;
       align-self: end;
-      justify-self: end;
+      justify-self: start;
       text-decoration: none;
       color: rgba(18, 18, 20, 0.92);
       font-family: var(--sans);
@@ -325,7 +382,7 @@
       padding: 8px 2px;
       position: relative;
       z-index: 6;
-      transform: translate3d(-10px, 0, 0);
+      transform: translate3d(0, 0, 0);
       transition: var(--transition);
     }
 
@@ -358,7 +415,7 @@
     }
 
     .contact-link:hover {
-      transform: translate3d(-4px, -2px, 0);
+      transform: translate3d(6px, -2px, 0);
       color: rgba(18, 18, 20, 1);
     }
 
@@ -505,19 +562,26 @@
     }
 
     .module-card[data-module="world"] {
-      background-image: url("images/世界观栏目背景图.png");
+      background-image: url("images/世界观栏目背景图.webp");
     }
 
     .module-card[data-module="log"] {
-      background-image: url("images/mobile_工作日志背景.png");
+      background-image: url("images/mobile_工作日志背景.webp");
     }
 
     .module-card[data-module="essay"] {
-      background-image: url("images/mobile_随笔背景.png");
+      background-image: url("images/mobile_随笔背景.webp");
+    }
+
+    .module-card[data-module="toolbox"] {
+      background-color: #241c15;
+      background-image:
+        url("images/百宝箱栏目背景图.png"),
+        linear-gradient(150deg, #3a2f24 0%, #241c15 48%, #17120e 100%);
     }
 
     .module-card[data-module="project"] {
-      background-image: url("images/mobile_游戏项目背景.png");
+      background-image: url("images/mobile_游戏项目背景.webp");
       background-color: transparent;
       color: rgba(18, 18, 20, 0.92);
     }
@@ -574,6 +638,12 @@
       -webkit-backdrop-filter: blur(12px);
     }
 
+    .module-card[data-module="toolbox"] .module-card-title {
+      background: rgba(20, 16, 12, 0.58);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+    }
+
     .contact-link {
       grid-column: 1 / -1;
       justify-self: end;
@@ -626,7 +696,7 @@
 <div class="container">
   <header>
     <h1>宝箱的网站</h1>
-    <p>GAMES, WORLD & LOGS</p>
+    <p>GAMES · WORLD · NOTES · TOOLS</p>
   </header>
 
   <section id="home-grid">
@@ -644,6 +714,10 @@
 
     <div class="module-card reveal" data-module="project" data-roman="IV" data-depth="0.14">
       <div class="module-card-title">游戏项目</div>
+    </div>
+
+    <div class="module-card reveal" data-module="toolbox" data-roman="V" data-depth="0.10">
+      <div class="module-card-title">宝箱的百宝箱</div>
     </div>
 
     <a class="contact-link" href="#" data-module="contact" aria-label="联系方式">
@@ -758,11 +832,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const showModule = async (key) => {
-      // 世界观设定集为独立页面（world.html）
-      if (key === 'world') { window.location.href = 'world.html'; return; }
+      // 设定集先选世界（worlds.html）
+      if (key === 'world') { window.location.href = 'worlds.html'; return; }
 
       // 随笔为独立页面（essays.html）
       if (key === 'essay') { window.location.href = 'essays.html'; return; }
+
+      // 百宝箱为独立页面（toolbox.html）
+      if (key === 'toolbox') { window.location.href = 'toolbox.html'; return; }
 
       homeGrid.style.display = 'none';
       moduleView.style.display = 'block';

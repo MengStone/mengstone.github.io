@@ -2,7 +2,7 @@
 
 用公司发的盒马礼品卡买了一盘牛肉拼盘，又买了些娃娃菜金针菇，煮了蘸酱吃。
 
-![](essays/images/mid-autumn-beef-hotpot/01.jpg)
+![](essays/images/mid-autumn-beef-hotpot/01.webp)
 
 写着有吊龙、嫩肉、匙柄，但是煮在一起也就分不清哪个是哪个了，反正都一样嚼着吃掉了。
 
@@ -10,7 +10,7 @@
 
 说起来，牛肉、娃娃菜、金针菇这三个真的是老搭档了，减脂健康餐的固定的组合。
 
-![](essays/images/mid-autumn-beef-hotpot/02.jpg)
+![](essays/images/mid-autumn-beef-hotpot/02.webp)
 
 买的沙茶酱有点咸，不怎么甜。
 

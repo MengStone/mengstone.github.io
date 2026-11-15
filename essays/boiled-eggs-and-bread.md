@@ -2,13 +2,13 @@
 
 我拿了4个鸡蛋，洗了洗，放到锅里，从冷水开始煮，一共煮了十三四分钟。期间看了一会儿燃气表，燃气表真的走得很慢，自炊做饭，燃气费几乎是不必去计算的。
 
-![](essays/images/boiled-eggs-and-bread/01.jpg)
+![](essays/images/boiled-eggs-and-bread/01.webp)
 
 出门的时候，我还拿了一个面包去公司，是昨天提前解冻好的。我之前在炉边皮皮买了几个面包，没有看仔细，有些是可以直接吃的，有些还需要复烤一下。
 
-![](essays/images/boiled-eggs-and-bread/02.jpg)
+![](essays/images/boiled-eggs-and-bread/02.webp)
 
-![](essays/images/boiled-eggs-and-bread/03.jpg)
+![](essays/images/boiled-eggs-and-bread/03.webp)
 
 但是出租屋里面，既没有烤箱，也没有空气炸锅，公司里倒是有微波炉，但应该没有用。
 

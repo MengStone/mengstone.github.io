@@ -1,0 +1,16 @@
+[
+  {
+    "slug": "chen-shitou",
+    "title": "陈石头",
+    "tags": ["人物"],
+    "excerpt": "四十岁才练气大圆满，五十八岁凑出一颗劣质筑基丹，一百五十岁在养老峰种菜养鸡——他这一生最大的成就，是终于有了个编制。",
+    "file": "world/eastern/persons/chen-shitou.md"
+  },
+  {
+    "slug": "zhou-qinghe",
+    "title": "周青禾",
+    "tags": ["人物"],
+    "excerpt": "双灵根，三次结丹，三次失败。两百四十岁临终前他总结这一生：后悔没早点去镇上开杂货铺。",
+    "file": "world/eastern/persons/zhou-qinghe.md"
+  }
+]

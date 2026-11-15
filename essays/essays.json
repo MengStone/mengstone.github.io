@@ -1,5 +1,33 @@
 [
   {
+    "slug": "stir-fried-pork",
+    "title": "炒肉片",
+    "date": "2026-11-15",
+    "tags": ["日记"],
+    "file": "essays/stir-fried-pork.md"
+  },
+  {
+    "slug": "oyster-sauce-beef",
+    "title": "蚝油牛肉",
+    "date": "2026-11-14",
+    "tags": ["日记"],
+    "file": "essays/oyster-sauce-beef.md"
+  },
+  {
+    "slug": "dumbbell-bench",
+    "title": "哑铃凳",
+    "date": "2026-11-13",
+    "tags": ["日记"],
+    "file": "essays/dumbbell-bench.md"
+  },
+  {
+    "slug": "chili-mince-fried-rice",
+    "title": "辣椒肉沫和蛋炒饭",
+    "date": "2026-11-07",
+    "tags": ["日记"],
+    "file": "essays/chili-mince-fried-rice.md"
+  },
+  {
     "slug": "peeling-a-pomelo",
     "title": "柚子和指甲锉",
     "date": "2026-09-28",

@@ -1,4 +1,4 @@
-![](essays/images/second-cooking-in-shanghai/01.jpg)
+![](essays/images/second-cooking-in-shanghai/01.webp)
 
 隔了几天，到了周末，第二次开火了，这回做的是西红柿鸡蛋意面。
 
@@ -6,7 +6,7 @@
 
 从动手到坐下，还是四十分钟，吃还是十分钟。
 
-![](essays/images/second-cooking-in-shanghai/02.jpg)
+![](essays/images/second-cooking-in-shanghai/02.webp)
 
 然后收拾，又花去十几分钟。
 

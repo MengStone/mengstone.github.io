@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>百宝箱 · 宝箱的网站</title>
+<style>
+  /* --- 自托管字体：本地文件，不请求任何外部资源 --- */
+  @font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 500; font-display: swap; src: url("fonts/cormorant-garamond-latin-500-normal.woff2") format("woff2"); }
+  @font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/cormorant-garamond-latin-600-normal.woff2") format("woff2"); }
+  @font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 700; font-display: swap; src: url("fonts/cormorant-garamond-latin-700-normal.woff2") format("woff2"); }
+  @font-face { font-family: "Cormorant Garamond"; font-style: italic; font-weight: 500; font-display: swap; src: url("fonts/cormorant-garamond-latin-500-italic.woff2") format("woff2"); }
+  /* 拍数与简谱数字用无衬线体：衬线体的「1」太像字母 I */
+  @font-face { font-family: "Inter"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/inter-latin-400-normal.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/inter-latin-600-normal.woff2") format("woff2"); }
+
+  /* --- 暗色工坊 · 百宝箱 主题变量 --- */
+  :root {
+    --wood-deep: #0e0b08;
+    --brass: #c9a227;
+    --brass-light: #e8cf94;
+    --brass-deep: #8d6b28;
+    --ivory: #efe4cd;
+    --muted: #9a855c;
+    --muted-soft: rgba(240, 230, 210, 0.52);
+    --line: rgba(201, 162, 39, 0.20);
+    --serif-cn: "Songti SC", "STSong", "SimSun", "Noto Serif SC", "Source Han Serif SC", serif;
+    --serif-en: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+    --num: "Inter", "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+    --transition: all 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scrollbar-gutter: stable; }
+
+  body {
+    margin: 0;
+    font-family: var(--serif-cn);
+    color: var(--ivory);
+    line-height: 1.9;
+    -webkit-font-smoothing: antialiased;
+    background-color: var(--wood-deep);
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E"),
+      radial-gradient(1000px 520px at 80% -10%, rgba(201, 162, 39, 0.10) 0%, rgba(0,0,0,0) 62%),
+      radial-gradient(860px 520px at 6% 108%, rgba(126, 74, 30, 0.16) 0%, rgba(0,0,0,0) 60%);
+    background-attachment: fixed;
+  }
+
+  /* --- 顶部导航 --- */
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px clamp(18px, 5vw, 48px);
+    background: rgba(14, 11, 8, 0.82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .top-nav a {
+    color: var(--ivory);
+    text-decoration: none;
+    font-size: 0.95rem;
+    letter-spacing: 0.06em;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: var(--transition);
+  }
+
+  .top-nav a:hover { color: var(--brass-light); }
+
+  .back-arrow i {
+    display: inline-block;
+    width: 34px;
+    height: 1px;
+    background: currentColor;
+    position: relative;
+  }
+
+  .back-arrow i::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -3px;
+    width: 7px;
+    height: 7px;
+    border-left: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    transform: rotate(45deg);
+  }
+
+  .nav-brand {
+    font-family: var(--serif-en);
+    font-style: italic;
+    letter-spacing: 0.18em;
+    font-size: 1rem;
+    color: var(--muted);
+  }
+
+  /* --- 页首 --- */
+  .chest-header {
+    max-width: 820px;
+    margin: clamp(48px, 8vw, 84px) auto 0;
+    padding: 0 clamp(20px, 5vw, 40px);
+    text-align: center;
+  }
+
+  .chest-header .kicker {
+    font-family: var(--serif-en);
+    font-style: italic;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    color: var(--brass);
+    margin: 0 0 16px;
+  }
+
+  .chest-header h1 {
+    font-weight: 900;
+    font-size: clamp(2.2rem, 6vw, 3.4rem);
+    letter-spacing: 0.2em;
+    margin: 0;
+    color: #f4e9d3;
+  }
+
+  .chest-header .rule {
+    width: 44px;
+    height: 1px;
+    background: rgba(240, 230, 210, 0.26);
+    margin: 22px auto 0;
+  }
+
+  .chest-header .preface {
+    max-width: 540px;
+    margin: 20px auto 0;
+    color: var(--muted-soft);
+    font-size: 1rem;
+  }
+
+  /* --- 工具墙 --- */
+  .tool-wall {
+    max-width: 920px;
+    margin: clamp(34px, 5vw, 52px) auto 0;
+    padding: 0 clamp(20px, 5vw, 40px);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+  }
+
+  .tool-card {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 16px;
+    padding: 20px 22px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.012));
+    border: 1px solid rgba(201, 162, 39, 0.20);
+    transition: var(--transition);
+  }
+
+  .tool-card.live { cursor: pointer; border-color: rgba(201, 162, 39, 0.5); }
+
+  .tool-card.live:hover {
+    transform: translateY(-2px);
+    border-color: var(--brass);
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.45);
+  }
+
+  .tool-card.soon { opacity: 0.42; }
+
+  .tc-ico {
+    display: block;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+    background: linear-gradient(150deg, var(--brass-light), var(--brass-deep));
+  }
+
+  .tool-card.soon .tc-ico { background: rgba(240, 230, 210, 0.14); }
+
+  .tool-card h3 {
+    margin: 0 0 4px;
+    font-size: 1.05rem;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: #f0e4cb;
+  }
+
+  .tool-card p {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .tc-state {
+    position: absolute;
+    right: 18px;
+    top: 20px;
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+  }
+
+  .tool-card.live .tc-state { color: var(--brass); }
+
+  /* --- 节拍器 --- */
+  .metro {
+    max-width: 920px;
+    margin: clamp(26px, 4vw, 40px) auto 0;
+    padding: 0 clamp(20px, 5vw, 40px);
+    scroll-margin-top: 90px;
+  }
+
+  .metro-panel {
+    border-radius: 22px;
+    padding: clamp(22px, 4vw, 40px);
+    background: linear-gradient(160deg, #241b14, #171009);
+    border: 1px solid rgba(201, 162, 39, 0.24);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .metro-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding-bottom: 16px;
+    margin-bottom: clamp(18px, 3vw, 26px);
+    border-bottom: 1px solid rgba(201, 162, 39, 0.16);
+  }
+
+  .metro-kicker {
+    font-family: var(--serif-en);
+    font-style: italic;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    color: var(--brass);
+    margin: 0;
+  }
+
+  .metro-head h2 {
+    margin: 0;
+    font-size: clamp(1.3rem, 3vw, 1.7rem);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: #f4e9d3;
+  }
+
+  .lead {
+    margin: 0 0 clamp(20px, 3vw, 30px);
+    font-size: 0.98rem;
+    line-height: 2;
+    color: #cdbf9f;
+  }
+
+  /* 拍数：一排大格子 */
+  .beats-row {
+    display: flex;
+    gap: clamp(8px, 2vw, 18px);
+    margin: 0 0 clamp(14px, 2.4vw, 20px);
+  }
+
+  .beat-num {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: clamp(84px, 15vw, 128px);
+    border-radius: 16px;
+    border: 1px solid rgba(201, 162, 39, 0.14);
+    background: rgba(255, 255, 255, 0.025);
+    font-family: var(--num);
+    font-weight: 600;
+    font-size: clamp(2.6rem, 8vw, 4.6rem);
+    line-height: 1;
+    color: rgba(240, 230, 210, 0.22);
+    font-variant-numeric: tabular-nums;
+    transition: color 0.1s ease, background 0.1s ease, box-shadow 0.1s ease, transform 0.1s ease;
+  }
+
+  .beat-num.first { color: rgba(201, 162, 39, 0.38); }
+
+  .beat-num.on {
+    color: #fbf0cf;
+    background: rgba(201, 162, 39, 0.16);
+    border-color: rgba(201, 162, 39, 0.65);
+    box-shadow: 0 0 44px rgba(201, 162, 39, 0.22), inset 0 0 34px rgba(201, 162, 39, 0.10);
+    transform: translateY(-2px) scale(1.03);
+  }
+
+  .beat-num.first.on { color: #fff6da; }
+
+  /* --- 曲谱条 --- */
+  .score-label {
+    margin: 0 0 8px;
+    font-size: 0.74rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+  }
+
+  .score-view {
+    position: relative;
+    overflow: hidden;
+    height: clamp(88px, 13vw, 108px);
+    margin: 0 0 clamp(20px, 3vw, 28px);
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.30);
+    border: 1px solid rgba(201, 162, 39, 0.16);
+  }
+
+  .score-strip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    will-change: transform;
+  }
+
+  .score-bar {
+    display: flex;
+    flex: 0 0 auto;
+    border-left: 1px solid rgba(201, 162, 39, 0.26);
+  }
+
+  .score-bar:first-child { border-left: none; }
+
+  .score-note {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    font-family: var(--num);
+    font-size: clamp(1.05rem, 2.8vw, 1.5rem);
+    font-weight: 600;
+    color: rgba(240, 230, 210, 0.5);
+    border-right: 1px solid rgba(240, 230, 210, 0.05);
+    transition: color 0.1s ease, background 0.1s ease, text-shadow 0.1s ease;
+  }
+
+  .score-note.rest {
+    background: repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0 6px, rgba(255,255,255,0) 6px 12px);
+  }
+
+  /* 简谱的高低八度点 */
+  .score-note.low::after,
+  .score-note.high::before {
+    content: "·";
+    position: absolute;
+    left: 50%;
+    font-size: 1.1em;
+    line-height: 1;
+    transform: translateX(-50%);
+  }
+
+  .score-note.low::after { top: calc(50% + 13px); }
+  .score-note.high::before { top: calc(50% - 32px); }
+
+  .chips.songs .chip {
+    font-size: 0.84rem;
+    padding: 7px 13px;
+  }
+
+  .score-note.on {
+    color: #fff6da;
+    background: rgba(201, 162, 39, 0.20);
+    box-shadow: inset 0 0 26px rgba(201, 162, 39, 0.18);
+    text-shadow: 0 0 18px rgba(232, 207, 148, 0.5);
+  }
+
+  .score-cursor {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, rgba(232,207,148,0), var(--brass-light), rgba(232,207,148,0));
+    box-shadow: 0 0 18px rgba(232, 207, 148, 0.55);
+    pointer-events: none;
+  }
+
+  /* 开始按钮 */
+  .metro-actions {
+    display: flex;
+    justify-content: center;
+    margin: 0 0 clamp(24px, 4vw, 34px);
+  }
+
+  .play {
+    width: 100%;
+    max-width: 440px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 19px 34px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    font-family: var(--serif-cn);
+    font-size: 1.12rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: #241a0c;
+    background: linear-gradient(150deg, var(--brass-light), var(--brass) 60%, var(--brass-deep));
+    box-shadow: 0 16px 38px rgba(201, 162, 39, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    transition: var(--transition);
+  }
+
+  .play:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 44px rgba(201, 162, 39, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+
+  .play.running {
+    background: linear-gradient(150deg, #3a2f24, #241b14);
+    color: var(--brass-light);
+    box-shadow: inset 0 0 0 1px rgba(201, 162, 39, 0.6);
+  }
+
+  .play .ico { font-size: 0.85em; line-height: 1; }
+
+  /* 两组选择 */
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px 30px;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 10px; }
+
+  .field > .label {
+    font-size: 0.74rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+  }
+
+  .chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+
+  .chip {
+    font-family: var(--serif-cn);
+    font-size: 0.9rem;
+    letter-spacing: 0.06em;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(240, 230, 210, 0.16);
+    background: transparent;
+    color: #cdbf9f;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .chip:hover { border-color: rgba(201, 162, 39, 0.6); color: var(--brass-light); }
+
+  .chip.on {
+    background: linear-gradient(150deg, var(--brass-light), var(--brass));
+    border-color: var(--brass);
+    color: #241a0c;
+    font-weight: 700;
+  }
+
+  /* 音量 */
+  .vol-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: clamp(20px, 3vw, 28px);
+    font-size: 0.74rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    flex: 1;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(240, 230, 210, 0.16);
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--brass-light);
+    box-shadow: 0 0 10px rgba(232, 207, 148, 0.5);
+    cursor: pointer;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border: none;
+    border-radius: 50%;
+    background: var(--brass-light);
+    cursor: pointer;
+  }
+
+  .foot-note {
+    margin: 16px 0 0;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: rgba(240, 230, 210, 0.34);
+  }
+
+  /* --- 页尾 --- */
+  footer {
+    max-width: 920px;
+    margin: 60px auto 0;
+    padding: 40px clamp(20px, 5vw, 40px) 48px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.88rem;
+    border-top: 1px solid var(--line);
+  }
+
+  footer a { color: var(--ivory); text-decoration: none; font-weight: 700; }
+
+  @media (max-width: 720px) {
+    .tool-wall { grid-template-columns: 1fr; }
+    .beat-num { min-height: 76px; }
+    .play { letter-spacing: 0.14em; }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="index.html" class="back-arrow"><i aria-hidden="true"></i><span>返回主页</span></a>
+    <a href="index.html" class="nav-brand">Treasure Chest's Tools</a>
+  </nav>
+
+  <header class="chest-header">
+    <p class="kicker">MengStone · The Chest</p>
+    <h1>百宝箱</h1>
+    <div class="rule" aria-hidden="true"></div>
+    <p class="preface">给自己的小工具。不追求通用，只求顺手——毕竟它们只服务一个人。</p>
+  </header>
+
+  <!-- 工具墙 -->
+  <section class="tool-wall">
+    <a class="tool-card live" href="#metro">
+      <span class="tc-ico"></span>
+      <h3>节拍器</h3>
+      <p>跟着数字吹，先把拍子稳住</p>
+      <span class="tc-state">可用</span>
+    </a>
+    <div class="tool-card soon">
+      <span class="tc-ico"></span>
+      <h3>调音器</h3>
+      <p>麦克风拾音，对口琴校音准</p>
+      <span class="tc-state">待解锁</span>
+    </div>
+    <div class="tool-card soon">
+      <span class="tc-ico"></span>
+      <h3>练琴计时</h3>
+      <p>番茄钟，记下今天的练习时长</p>
+      <span class="tc-state">待解锁</span>
+    </div>
+  </section>
+
+  <!-- 节拍器 -->
+  <section class="metro" id="metro">
+    <div class="metro-panel">
+
+      <div class="metro-head">
+        <p class="metro-kicker">Metronome</p>
+        <h2>节拍器</h2>
+      </div>
+
+      <p class="lead">按下开始，跟着亮起来的数字吹。下面那条曲谱会跟着走，走到哪个数字就吹哪个——格子宽的，就吹得长一点。跟不上就往左调一档。</p>
+
+      <div class="beats-row" id="beatRow" aria-hidden="true"></div>
+
+      <p class="score-label" id="scoreLabel">曲谱</p>
+      <div class="score-view" id="scoreView">
+        <div class="score-strip" id="scoreStrip"></div>
+        <div class="score-cursor" id="scoreCursor"></div>
+      </div>
+
+      <div class="metro-actions">
+        <button class="play" id="playBtn"><span class="ico">▶</span>开始</button>
+      </div>
+
+      <div class="controls">
+        <div class="field">
+          <span class="label">速度</span>
+          <div class="chips" id="speedChips">
+            <button class="chip" data-bpm="48">很慢</button>
+            <button class="chip" data-bpm="60">慢</button>
+            <button class="chip" data-bpm="72">中等</button>
+            <button class="chip" data-bpm="84">快</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="label">跟着哪首曲子练</span>
+          <div class="chips songs" id="songChips">
+            <button class="chip" data-song="twinkle">小星星</button>
+            <button class="chip" data-song="mary">玛丽有只小羊羔</button>
+            <button class="chip" data-song="laohu">两只老虎</button>
+            <button class="chip" data-song="ode">欢乐颂</button>
+            <button class="chip" data-song="jingle">铃儿响叮当</button>
+            <button class="chip" data-song="birthday">生日歌</button>
+            <button class="chip" data-song="rowboat">划船歌</button>
+            <button class="chip" data-song="minuet">小步舞曲</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="vol-row">
+        <span>音量</span>
+        <input type="range" id="volRange" min="0" max="100" value="70" aria-label="音量">
+      </div>
+
+      <p class="foot-note">当前速度：每分钟 <span id="bpmText">72</span> 下　·　空格键也能开始 / 停止</p>
+
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 MengStone · 百宝箱 · <a href="https://github.com/MengStone" target="_blank">GITHUB</a>
+  </footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var el = function (id) { return document.getElementById(id); };
+
+  /* ---------- 曲谱 ----------
+     记法：一行一小节，用 | 分隔；数字是简谱；
+     后面跟 :2 表示这个音占两拍（不写就是 1 拍）。 */
+  var SONGS = {
+    twinkle: {
+      label: '小星星',
+      beats: 4,
+      score: '1 1 5 5 | 6 6 5:2 | 4 4 3 3 | 2 2 1:2 | 5 5 4 4 | 3 3 2:2 | 5 5 4 4 | 3 3 2:2 | 1 1 5 5 | 6 6 5:2 | 4 4 3 3 | 2 2 1:2'
+    },
+    mary: {
+      label: '玛丽有只小羊羔',
+      beats: 4,
+      score: '3 2 1 2 | 3 3 3:2 | 2 2 2:2 | 3 5 5:2 | 3 2 1 2 | 3 3 3 3 | 2 2 3 2 | 1:4'
+    },
+    minuet: {
+      label: '小步舞曲',
+      beats: 3,
+      /* 0 表示休止；开头两拍空着，正好当预备拍 */
+      score: '0:2 5 | 1 2 3:0.5 4:0.5 | 5 1 1'
+    },
+    laohu: {
+      label: '两只老虎',
+      beats: 4,
+      /* 5, 表示低音 5（数字下面一个点） */
+      score: '1 2 3 1 | 1 2 3 1 | 3 4 5:2 | 3 4 5:2 | 5:0.5 6:0.5 5 4:0.5 3:0.5 1 | 5:0.5 6:0.5 5 4:0.5 3:0.5 1 | 1 5, 1:2 | 1 5, 1:2'
+    },
+    ode: {
+      label: '欢乐颂',
+      beats: 4,
+      score: '3 3 4 5 | 5 4 3 2 | 1 1 2 3 | 3 2 2:2 | 3 3 4 5 | 5 4 3 2 | 1 1 2 3 | 2 1 1:2'
+    },
+    jingle: {
+      label: '铃儿响叮当',
+      beats: 4,
+      score: '3:0.5 3:0.5 3 3:0.5 3:0.5 3 | 3 5 1 2 | 3:2 4:0.5 4:0.5 4:0.5 4:0.5 | 4 3:0.5 3:0.5 3:0.5 3:0.5 2 | 2 3 2 5, | 3:0.5 3:0.5 3 3:0.5 3:0.5 3 | 3 5 1 2 | 3:2 4:0.5 4:0.5 4:0.5 4:0.5 | 4 3:0.5 3:0.5 3:0.5 3:0.5 2 | 2 3 2 1'
+    },
+    birthday: {
+      label: '生日歌',
+      beats: 3,
+      score: '0:2 5:0.5 5:0.5 | 6 5 1\' | 7:3 | 0:2 5:0.5 5:0.5 | 6 5 2\' | 1\':3 | 0:2 5:0.5 5:0.5 | 5\' 3\' 1\' | 7 6:2 | 4 4 3 | 1 2 1'
+    },
+    rowboat: {
+      label: '划船歌',
+      beats: 6,
+      score: '1 1 1 2 3:2 | 3 2 3 4 5:2 | 1\' 1\' 1\' 5 5 5 | 3 3 3 1 1 1 | 5, 4 3 2 1:2'
+    }
+  };
+
+  var playBtn = el('playBtn');
+  var beatRow = el('beatRow');
+  var speedChips = document.querySelectorAll('[data-bpm]');
+  var songChips = document.querySelectorAll('[data-song]');
+  var volRange = el('volRange');
+  var bpmText = el('bpmText');
+  var scoreView = el('scoreView');
+  var scoreStrip = el('scoreStrip');
+  var scoreCursor = el('scoreCursor');
+  var scoreLabel = el('scoreLabel');
+
+  var STORE = 'baibao.metronome.v3';
+
+  var state = { bpm: 72, song: 'twinkle', beats: 4, volume: 0.7 };
+
+  try {
+    var saved = JSON.parse(localStorage.getItem(STORE) || '{}');
+    if (saved.bpm) state.bpm = saved.bpm;
+    if (saved.song && SONGS[saved.song]) state.song = saved.song;
+    if (saved.volume !== undefined) state.volume = saved.volume;
+  } catch (e) { /* 存储不可用时按默认走 */ }
+  state.beats = SONGS[state.song].beats;
+
+  function save() {
+    try {
+      localStorage.setItem(STORE, JSON.stringify({
+        bpm: state.bpm, song: state.song, volume: state.volume
+      }));
+    } catch (e) {}
+  }
+
+  /* ---------- 发声 ---------- */
+  var ctx = null, master = null;
+  var isRunning = false, timerID = null, rafID = null;
+  var nextNoteTime = 0, currentBeat = 0, totalBeat = 0;
+  var queue = [];
+  var LOOKAHEAD = 25, SCHEDULE_AHEAD = 0.12;
+
+  function ensureAudio() {
+    if (ctx) return;
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    ctx = new AC();
+    master = ctx.createGain();
+    master.gain.value = state.volume;
+    master.connect(ctx.destination);
+  }
+
+  function click(time, freq, peak) {
+    var osc = ctx.createOscillator();
+    var g = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, time);
+    g.gain.setValueAtTime(0.0001, time);
+    g.gain.exponentialRampToValueAtTime(peak, time + 0.002);
+    g.gain.exponentialRampToValueAtTime(0.0001, time + 0.06);
+    osc.connect(g);
+    g.connect(master);
+    osc.start(time);
+    osc.stop(time + 0.1);
+  }
+
+  function scheduler() {
+    while (nextNoteTime < ctx.currentTime + SCHEDULE_AHEAD) {
+      var accent = currentBeat === 0;
+      click(nextNoteTime, accent ? 1245 : 880, accent ? 0.85 : 0.5);
+      queue.push({ t: nextNoteTime, b: currentBeat, n: totalBeat });
+      nextNoteTime += 60 / state.bpm;
+      currentBeat = (currentBeat + 1) % state.beats;
+      totalBeat += 1;
+    }
+  }
+
+  /* ---------- 拍数 ---------- */
+  var dimTimer = null;
+
+  function flash(i) {
+    var nums = beatRow.children;
+    for (var k = 0; k < nums.length; k++) {
+      nums[k].classList.toggle('on', k === i);
+    }
+    clearTimeout(dimTimer);
+    var hold = Math.max(110, Math.min(320, (60 / state.bpm) * 1000 * 0.6));
+    dimTimer = setTimeout(function () {
+      for (var k = 0; k < nums.length; k++) nums[k].classList.remove('on');
+    }, hold);
+  }
+
+  var lastN = 0, lastT = 0;
+
+  function tick() {
+    if (!isRunning) return;
+    var now = ctx.currentTime;
+    while (queue.length && queue[0].t <= now) {
+      var item = queue.shift();
+      lastN = item.n;
+      lastT = item.t;
+      flash(item.b);
+    }
+    var dur = 60 / state.bpm;
+    if (dur > 0) drawScore(lastN + (now - lastT) / dur);
+    rafID = requestAnimationFrame(tick);
+  }
+
+  function renderBeats() {
+    beatRow.innerHTML = '';
+    for (var i = 0; i < state.beats; i++) {
+      var s = document.createElement('span');
+      s.className = 'beat-num' + (i === 0 ? ' first' : '');
+      s.textContent = String(i + 1);
+      beatRow.appendChild(s);
+    }
+  }
+
+  function clearBeats() {
+    for (var k = 0; k < beatRow.children.length; k++) {
+      beatRow.children[k].classList.remove('on');
+    }
+  }
+
+  /* ---------- 曲谱 ---------- */
+  var noteEls = [];
+  var notes = [];
+  var scoreBeats = 0;
+  var beatPx = 64;
+  var curNote = -1;
+
+  function parseScore(str) {
+    return str.split('|').map(function (bar) {
+      return bar.trim().split(/\s+/).map(function (tok) {
+        var p = tok.split(':');
+        return { n: p[0], b: p[1] ? Number(p[1]) : 1 };
+      });
+    });
+  }
+
+  function cursorX() {
+    var w = scoreView.clientWidth || 600;
+    return Math.round(w * 0.12);
+  }
+
+  function renderScore(song) {
+    scoreStrip.innerHTML = '';
+    noteEls = [];
+    notes = [];
+    scoreBeats = 0;
+    curNote = -1;
+
+    if (!song.score) {
+      scoreView.style.display = 'none';
+      scoreLabel.style.display = 'none';
+      return;
+    }
+    scoreView.style.display = '';
+    scoreLabel.style.display = '';
+    scoreLabel.textContent = song.label + ' · 简谱';
+
+    beatPx = window.innerWidth < 720 ? 48 : 64;
+
+    parseScore(song.score).forEach(function (bar) {
+      var barEl = document.createElement('div');
+      barEl.className = 'score-bar';
+      bar.forEach(function (note) {
+        var isRest = note.n === '0';
+        var digit = note.n.charAt(0);
+        var oct = note.n.slice(1);
+        var noteEl = document.createElement('div');
+        noteEl.className = 'score-note' + (isRest ? ' rest' : '') +
+          (oct === ',' ? ' low' : '') + (oct === "'" ? ' high' : '');
+        noteEl.style.width = (note.b * beatPx) + 'px';
+        noteEl.textContent = isRest ? '' : digit;
+        barEl.appendChild(noteEl);
+        noteEls.push(noteEl);
+        notes.push({ start: scoreBeats, len: note.b, rest: isRest });
+        scoreBeats += note.b;
+      });
+      scoreStrip.appendChild(barEl);
+    });
+
+    scoreCursor.style.left = cursorX() + 'px';
+    resetScore();
+  }
+
+  function resetScore() {
+    if (!scoreBeats) return;
+    scoreStrip.style.transition = 'none';
+    scoreStrip.style.transform = 'translateX(' + cursorX() + 'px)';
+    for (var i = 0; i < noteEls.length; i++) noteEls[i].classList.remove('on');
+    curNote = -1;
+  }
+
+  /* 按「第几拍」的精确位置（可以是 3.5 这种小数）画播放头 */
+  function drawScore(pos) {
+    if (!scoreBeats) return;
+    if (pos < 0) pos = 0;
+    var p = pos % scoreBeats;
+
+    scoreStrip.style.transform = 'translateX(' + (cursorX() - p * beatPx) + 'px)';
+
+    var idx = -1;
+    for (var i = 0; i < notes.length; i++) {
+      if (p >= notes[i].start && p < notes[i].start + notes[i].len) {
+        if (!notes[i].rest) idx = i;
+        break;
+      }
+    }
+    if (idx !== curNote) {
+      if (curNote >= 0 && noteEls[curNote]) noteEls[curNote].classList.remove('on');
+      if (idx >= 0) noteEls[idx].classList.add('on');
+      curNote = idx;
+    }
+  }
+
+  function syncUI() {
+    for (var i = 0; i < speedChips.length; i++) {
+      speedChips[i].classList.toggle('on', Number(speedChips[i].dataset.bpm) === state.bpm);
+    }
+    for (var j = 0; j < songChips.length; j++) {
+      songChips[j].classList.toggle('on', songChips[j].dataset.song === state.song);
+    }
+    volRange.value = Math.round(state.volume * 100);
+    bpmText.textContent = state.bpm;
+    renderBeats();
+  }
+
+  /* ---------- 启停 ---------- */
+  function start() {
+    ensureAudio();
+    if (!ctx) return;
+    if (ctx.state === 'suspended') ctx.resume();
+
+    isRunning = true;
+    currentBeat = 0;
+    totalBeat = 0;
+    queue.length = 0;
+    resetScore();
+    nextNoteTime = ctx.currentTime + 0.12;
+    lastN = 0;
+    lastT = nextNoteTime;
+    timerID = setInterval(scheduler, LOOKAHEAD);
+    scheduler();
+
+    playBtn.classList.add('running');
+    playBtn.innerHTML = '<span class="ico">■</span>停止';
+    rafID = requestAnimationFrame(tick);
+  }
+
+  function stop() {
+    isRunning = false;
+    clearInterval(timerID);
+    timerID = null;
+    cancelAnimationFrame(rafID);
+    queue.length = 0;
+    clearTimeout(dimTimer);
+    clearBeats();
+    resetScore();
+    playBtn.classList.remove('running');
+    playBtn.innerHTML = '<span class="ico">▶</span>开始';
+  }
+
+  /* ---------- 事件 ---------- */
+  playBtn.addEventListener('click', function () {
+    if (isRunning) { stop(); } else { start(); }
+  });
+
+  for (var s = 0; s < speedChips.length; s++) {
+    (function (chip) {
+      chip.addEventListener('click', function () {
+        state.bpm = Number(chip.dataset.bpm);
+        syncUI();
+        save();
+      });
+    })(speedChips[s]);
+  }
+
+  for (var c = 0; c < songChips.length; c++) {
+    (function (chip) {
+      chip.addEventListener('click', function () {
+        var id = chip.dataset.song;
+        if (!SONGS[id]) return;
+        if (isRunning) stop();
+        state.song = id;
+        state.beats = SONGS[id].beats;
+        syncUI();
+        renderScore(SONGS[id]);
+        save();
+      });
+    })(songChips[c]);
+  }
+
+  volRange.addEventListener('input', function () {
+    state.volume = Number(volRange.value) / 100;
+    if (master) master.gain.value = state.volume;
+    save();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    var t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+    if (e.code === 'Space') {
+      e.preventDefault();
+      if (isRunning) { stop(); } else { start(); }
+    }
+  });
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden && isRunning) stop();
+  });
+
+  window.addEventListener('resize', function () {
+    if (isRunning) return;
+    renderScore(SONGS[state.song]);
+  });
+
+  syncUI();
+  renderScore(SONGS[state.song]);
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>两个世界 · 宝箱的网站</title>
+<style>
+  :root {
+    --ink: #2f2a24;
+    --ink-soft: rgba(47, 42, 36, 0.62);
+    --ink-faint: rgba(47, 42, 36, 0.36);
+    --paper: #f4f2ee;
+    --serif-cn: "Songti SC", "STSong", "SimSun", "Noto Serif SC", serif;
+    --serif-en: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+    --transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scrollbar-gutter: stable; font-size: 17px; }
+
+  body {
+    margin: 0;
+    font-family: var(--serif-cn);
+    line-height: 1.9;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    background-color: var(--paper);
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"),
+      radial-gradient(1000px 480px at 50% -8%, #fbfaf7 0%, rgba(0,0,0,0) 60%),
+      var(--paper);
+    background-attachment: fixed;
+  }
+
+  /* --- 顶部导航 --- */
+  .top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px clamp(18px, 5vw, 48px);
+  }
+
+  .top-nav a {
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: var(--transition);
+  }
+
+  .top-nav a:hover { color: var(--ink-soft); }
+
+  .back-arrow i {
+    display: inline-block;
+    width: 34px;
+    height: 1px;
+    background: currentColor;
+    position: relative;
+  }
+
+  .back-arrow i::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -3px;
+    width: 7px;
+    height: 7px;
+    border-left: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    transform: rotate(45deg);
+  }
+
+  .nav-brand {
+    font-style: italic;
+    letter-spacing: 0.18em;
+    font-size: 1.02rem;
+    color: var(--ink-soft);
+  }
+
+  /* --- 卷首 --- */
+  .page-head {
+    max-width: 780px;
+    margin: clamp(34px, 6vw, 64px) auto 0;
+    padding: 0 clamp(20px, 5vw, 40px);
+    text-align: center;
+  }
+
+  .page-head .kicker {
+    font-size: 0.86rem;
+    letter-spacing: 0.34em;
+    color: var(--ink-faint);
+    margin: 0 0 14px;
+  }
+
+  .page-head h1 {
+    font-size: clamp(1.9rem, 5vw, 2.9rem);
+    font-weight: 900;
+    letter-spacing: 0.24em;
+    margin: 0;
+    text-indent: 0.24em;
+  }
+
+  .page-head .preface {
+    margin: 18px 0 0;
+    font-size: 1.04rem;
+    color: var(--ink-soft);
+  }
+
+  /* --- 两界 --- */
+  .realms {
+    max-width: 1180px;
+    margin: clamp(28px, 5vw, 50px) auto 0;
+    padding: 0 clamp(18px, 5vw, 40px) clamp(30px, 5vw, 54px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(14px, 2vw, 26px);
+  }
+
+  .realm {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    min-height: clamp(300px, 44vh, 480px);
+    padding: clamp(30px, 4vw, 56px) clamp(20px, 3vw, 44px);
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--r-bg);
+    color: var(--r-ink);
+    border: 1px solid var(--r-line);
+    box-shadow: 0 20px 54px var(--r-shadow);
+    transition: transform 0.55s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.55s;
+  }
+
+  .realm:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 70px var(--r-shadow-strong);
+  }
+
+  .realm.western {
+    --r-bg: #f3e9d3;
+    --r-ink: #33261b;
+    --r-soft: rgba(51, 38, 27, 0.62);
+    --r-accent: #a9843f;
+    --r-seal: #a63a2b;
+    --r-line: rgba(51, 38, 27, 0.16);
+    --r-shadow: rgba(78, 58, 32, 0.14);
+    --r-shadow-strong: rgba(78, 58, 32, 0.22);
+    font-family: "Songti SC", "STSong", "SimSun", serif;
+    background-image:
+      radial-gradient(120% 90% at 12% 0%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 55%),
+      linear-gradient(180deg, #f7efdd, #eee0c4);
+  }
+
+  .realm.eastern {
+    --r-bg: #eef0ec;
+    --r-ink: #1c2420;
+    --r-soft: rgba(28, 36, 32, 0.58);
+    --r-accent: #5c8d76;
+    --r-seal: #a63a2b;
+    --r-line: rgba(28, 36, 32, 0.14);
+    --r-shadow: rgba(38, 58, 48, 0.13);
+    --r-shadow-strong: rgba(38, 58, 48, 0.2);
+    font-family: "KaiTi", "STKaiti", "Kaiti SC", "Songti SC", serif;
+    background-image:
+      radial-gradient(120% 90% at 88% 0%, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 55%),
+      linear-gradient(180deg, #f4f6f2, #e3e9e2);
+  }
+
+  /* 世界的记号：西幻菱形，修仙方印 */
+  .realm-mark {
+    width: 8px;
+    height: 8px;
+    margin-bottom: 22px;
+    background: var(--r-seal);
+  }
+
+  .realm.western .realm-mark { transform: rotate(45deg); }
+  .realm.eastern .realm-mark {
+    background: var(--r-seal);
+    border: none;
+    border-radius: 50%;
+    width: 9px;
+    height: 9px;
+  }
+
+  .realm h2 {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    font-weight: 900;
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+    margin: 0.3em 0 0.12em;
+  }
+
+  .realm-sub {
+    margin: 0;
+    font-size: 0.98rem;
+    letter-spacing: 0.26em;
+    color: var(--r-soft);
+    text-indent: 0.26em;
+  }
+
+  .realm-tags {
+    margin: 1.4em 0 0;
+    font-size: 0.9rem;
+    letter-spacing: 0.18em;
+    color: var(--r-soft);
+  }
+
+  .realm-go {
+    margin-top: 1.8em;
+    font-size: 0.94rem;
+    letter-spacing: 0.32em;
+    color: var(--r-seal);
+    padding-bottom: 3px;
+    border-bottom: 1px solid transparent;
+    transition: var(--transition);
+  }
+
+  .realm:hover .realm-go { border-bottom-color: var(--r-seal); }
+
+  footer {
+    padding: 26px 20px 46px;
+    text-align: center;
+    color: var(--ink-faint);
+    font-size: 0.92rem;
+  }
+
+  footer a { color: var(--ink-soft); text-decoration: none; font-weight: 700; }
+
+  @media (max-width: 720px) {
+    .realms { grid-template-columns: 1fr; }
+    .realm { min-height: 240px; }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="index.html" class="back-arrow"><i aria-hidden="true"></i><span>返回主页</span></a>
+    <a href="index.html" class="nav-brand">宝箱的设定集</a>
+  </nav>
+
+  <header class="page-head">
+    <p class="kicker">宝箱 · 设定集</p>
+    <h1>两个世界</h1>
+    <p class="preface">一本是奇幻的故事，一本是仙途的秘法。</p>
+  </header>
+
+  <main class="realms">
+    <a class="realm western" href="world.html?u=western">
+      <span class="realm-mark" aria-hidden="true"></span>
+      <h2>西幻</h2>
+      <p class="realm-sub">西方奇幻</p>
+      <p class="realm-tags">人物 · 城市 · 事件 · 物品</p>
+      <span class="realm-go">冒险</span>
+    </a>
+
+    <a class="realm eastern" href="world.html?u=eastern">
+      <span class="realm-mark" aria-hidden="true"></span>
+      <h2>修仙</h2>
+      <p class="realm-sub">东方修真</p>
+      <p class="realm-tags">人物 · 宗门 · 纪闻 · 器物</p>
+      <span class="realm-go">参悟</span>
+    </a>
+  </main>
+
+  <footer>
+    &copy; 2025 宝箱 · <a href="https://github.com/MengStone" target="_blank">代码仓库</a>
+  </footer>
+
+<script>
+  // 防点击穿透：页面刚出现的一小段时间内不接受点击。
+  // 否则从首页双击进来时，第二下会直接落在「西幻」卡上，看起来像跳过了选择。
+  (function () {
+    var ready = false;
+    setTimeout(function () { ready = true; }, 500);
+    var cards = document.querySelectorAll('.realm');
+    for (var i = 0; i < cards.length; i++) {
+      cards[i].addEventListener('click', function (e) {
+        if (!ready) { e.preventDefault(); }
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-![](essays/images/first-cooking-in-shanghai/01.jpg)
+![](essays/images/first-cooking-in-shanghai/01.webp)
 
 来上海之后，安定下来，第一次开火做饭，做的是简单的青椒鸡蛋意面。
 
@@ -8,7 +8,7 @@
 
 煮完面条捞出来，盛在大碗里，才能够腾出锅来，去炒鸡蛋，盛出鸡蛋倒在盘子里，再去炒辣椒。把鸡蛋和辣椒一起炒好，再盛到面碗里，面条已经是不可避免的坨成一坨了。
 
-![](essays/images/first-cooking-in-shanghai/02.jpg)
+![](essays/images/first-cooking-in-shanghai/02.webp)
 
 拌一拌，味道还行。最基本的调味，就已经达到了我的饮食要求。
 
